@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Unity.VisualScripting;
 
 public class PlayerController : NetworkBehaviour
 {
     public float moveSpeed = 5f;
-    public float jumpForce = 5f;
+    public float jumpForce = 10f; 
+
     public float lookSensitivity = 2f;
+    public float cameraSmoothing = 5f; 
 
     private Rigidbody rb;
     public Transform cameraTransform;
@@ -15,17 +18,22 @@ public class PlayerController : NetworkBehaviour
     private bool isGrounded;
 
     private float rotationX = 0f;
-    float mouseX = 0f;
-    float mouseY = 0f;
+
     //public Transform respawnPoint;
 
-    private Quaternion targetCameraRotation;
-    private Vector3 targetCameraPosition;
     GameObject respawnPoint;
+    private Vector3 currentCameraPosition;
+    private Quaternion currentCameraRotation;
 
+    private Ray cameraRay; 
+    private RaycastHit cameraHit;
+    
     void Start()
     {
+      
+
         rb = GetComponent<Rigidbody>();
+        
         Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.Find("SpawnPoint");
         Application.targetFrameRate = 60;
@@ -34,6 +42,8 @@ public class PlayerController : NetworkBehaviour
         {
             cameraTransform.gameObject.SetActive(false);
         }
+
+       
     }
 
     void Update()
@@ -43,11 +53,15 @@ public class PlayerController : NetworkBehaviour
             return;
         }
 
+
+       
+       
+
         float yDistance = Mathf.Abs(transform.position.y - respawnPoint.transform.position.y);
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-       
+
         Vector3 forwardDirection = cameraTransform.forward;
         forwardDirection.y = 0f;
         forwardDirection.Normalize();
@@ -65,7 +79,7 @@ public class PlayerController : NetworkBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
-        if (isGrounded)
+        if (isGrounded) 
         {
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.7f))
@@ -77,13 +91,28 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
-        // mouseX += Input.GetAxis("Mouse X") * lookSensitivity;
-        // mouseY += Input.GetAxis("Mouse Y") * lookSensitivity;
+        cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
 
-        //mouseX = Mathf.Clamp(mouseX, -60f, 60f);
+        if (Physics.Raycast(cameraRay, out cameraHit, 1f))
+        {
+            Debug.Log(cameraHit.collider.name);
+            if (cameraHit.collider.name == "Activator")
+            {
+                if(Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
+                {
+                    TileSpawner.instance.SpawnTiles();
+                }
+            }
+            else if (cameraHit.collider.name == "Resetor")
+            {
+                if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
+                {
+                    TileSpawner.instance.ResetTiles();
+                }
+            }
+            
+        }
 
-        //Quaternion target = Quaternion.Euler(-mouseX, mouseY, 0);
-        //transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 3f);
 
         float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
@@ -100,7 +129,7 @@ public class PlayerController : NetworkBehaviour
             Cursor.lockState = CursorLockMode.Locked;
         }
 
-        if(yDistance >= 10)
+        if (yDistance >= 10)
         {
             transform.position = respawnPoint.transform.position;
         }
@@ -113,10 +142,10 @@ public class PlayerController : NetworkBehaviour
     [Command]
     void CmdDestroyObject(GameObject objectToDestroy)
     {
-       
+
         if (objectToDestroy != null && objectToDestroy.CompareTag("Breakable"))
         {
-            
+
             NetworkServer.Destroy(objectToDestroy);
         }
     }

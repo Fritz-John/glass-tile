@@ -8,6 +8,7 @@ public class NetworkManager : MonoBehaviour
     void Start()
     {
         
+
     }
 
     // Update is called once per frame
