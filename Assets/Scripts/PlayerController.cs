@@ -15,7 +15,8 @@ public class PlayerController : NetworkBehaviour
     private bool isGrounded;
 
     private float rotationX = 0f;
-
+    float mouseX = 0f;
+    float mouseY = 0f;
     //public Transform respawnPoint;
 
     private Quaternion targetCameraRotation;
@@ -27,6 +28,8 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.Find("SpawnPoint");
+        Application.targetFrameRate = 60;
+
         if (!isLocalPlayer)
         {
             cameraTransform.gameObject.SetActive(false);
@@ -74,11 +77,18 @@ public class PlayerController : NetworkBehaviour
                 }
             }
         }
+        // mouseX += Input.GetAxis("Mouse X") * lookSensitivity;
+        // mouseY += Input.GetAxis("Mouse Y") * lookSensitivity;
+
+        //mouseX = Mathf.Clamp(mouseX, -60f, 60f);
+
+        //Quaternion target = Quaternion.Euler(-mouseX, mouseY, 0);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * 3f);
 
         float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
 
-        transform.Rotate(Vector3.up * mouseX );
+        transform.Rotate(Vector3.up * mouseX);
 
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -55f, 55f);
