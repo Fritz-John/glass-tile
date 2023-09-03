@@ -356,6 +356,7 @@ MonoBehaviour:
   lookSensitivity: 2
   cameraSmoothing: 5
   cameraTransform: {fileID: 5175070414252079543}
+  breakGlass: {fileID: 6358683805812472719, guid: c0e30b90ae629434b83ed7204f794f0e, type: 3}
 --- !u!54 &3556377413599207906
 Rigidbody:
   m_ObjectHideFlags: 0

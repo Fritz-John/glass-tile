@@ -15,6 +15,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     private Rigidbody rb;
     public Transform cameraTransform;
 
+    public AudioSource breakGlass;
+
     private bool isGrounded;
 
     private float rotationX = 0f;
@@ -86,6 +88,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             {
                 if (hit.collider.CompareTag("Breakable"))
                 {
+                    breakGlass.Play();
                     CmdDestroyObject(hit.collider.gameObject);
 
                 }
