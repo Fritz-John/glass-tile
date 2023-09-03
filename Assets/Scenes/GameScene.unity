@@ -282,7 +282,6 @@ GameObject:
   - component: {fileID: 73877516}
   - component: {fileID: 73877515}
   - component: {fileID: 73877514}
-  - component: {fileID: 73877513}
   - component: {fileID: 73877517}
   m_Layer: 0
   m_Name: Sphere
@@ -306,18 +305,6 @@ Transform:
   m_Father: {fileID: 1106457811}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &73877513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 73877511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8144d347b718ce74d84f36b97189b569, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!135 &73877514
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1408,7 +1395,6 @@ GameObject:
   - component: {fileID: 1032078701}
   - component: {fileID: 1032078700}
   - component: {fileID: 1032078699}
-  - component: {fileID: 1032078702}
   - component: {fileID: 1032078703}
   m_Layer: 0
   m_Name: Sphere
@@ -1495,18 +1481,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1032078697}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1032078702
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1032078697}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8144d347b718ce74d84f36b97189b569, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &1032078703
 Animator:
   serializedVersion: 4
@@ -2045,7 +2019,6 @@ GameObject:
   - component: {fileID: 1517858374}
   - component: {fileID: 1517858373}
   - component: {fileID: 1517858375}
-  - component: {fileID: 1517858376}
   m_Layer: 0
   m_Name: PlatformSpawner
   m_TagString: Untagged
@@ -2108,40 +2081,6 @@ MonoBehaviour:
   serverOnly: 0
   visible: 0
   hasSpawned: 0
---- !u!114 &1517858376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1517858372}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 1517858374}
-  clientAuthority: 1
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChange: 1
-  bufferResetMultiplier: 3
-  positionSensitivity: 0.01
-  rotationSensitivity: 0.01
-  scaleSensitivity: 0.01
 --- !u!1 &1702222877
 GameObject:
   m_ObjectHideFlags: 0
