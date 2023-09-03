@@ -4,7 +4,7 @@ using UnityEngine;
 using Mirror;
 using Unity.VisualScripting;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerMoveCamera : NetworkBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 10f; 
@@ -100,14 +100,14 @@ public class PlayerController : NetworkBehaviour
             {
                 if(Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
                 {
-                    TileSpawner.instance.SpawnTiles();
+                    CmdSpawnTiles();
                 }
             }
             else if (cameraHit.collider.name == "Resetor")
             {
                 if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
                 {
-                    TileSpawner.instance.ResetTiles();
+                    CmdResetTiles();
                 }
             }
             
@@ -137,6 +137,17 @@ public class PlayerController : NetworkBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
+    }
+    [Command]
+    public void CmdSpawnTiles()
+    {
+        TileSpawner.instance.SpawnTiles();
+    }
+
+    [Command]
+    public void CmdResetTiles()
+    {
+        TileSpawner.instance.ResetTiles();
     }
 
     [Command]

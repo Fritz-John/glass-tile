@@ -13,12 +13,16 @@ public class TileSpawner : NetworkBehaviour
     public int colCount = 2;
 
     public static TileSpawner instance;
+
+    [SyncVar]
     public bool isActivated = false;
 
     public Animator activate;
     public Animator reset;
     GameObject tile;
+
     List<GameObject> tiles = new List<GameObject>();
+
     private void Awake()
     {
         instance = this;
