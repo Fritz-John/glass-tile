@@ -2,42 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using Unity.VisualScripting;
 
 public class PlayerMoveCamera : NetworkBehaviour
 {
     public float moveSpeed = 5f;
-    public float jumpForce = 10f; 
+    public float jumpForce = 10f;
 
     public float lookSensitivity = 2f;
-    public float cameraSmoothing = 5f; 
+    public float cameraSmoothing = 5f;
 
     private Rigidbody rb;
     public Transform cameraTransform;
 
-    public AudioSource breakGlass;
+
+
 
     private bool isGrounded;
 
     private float rotationX = 0f;
-
+    float yDistance = 0;
     //public Transform respawnPoint;
 
-    GameObject respawnPoint;
+    GameObject[] respawnPoint;
     private Vector3 currentCameraPosition;
     private Quaternion currentCameraRotation;
 
-    private Ray cameraRay; 
+    private Ray cameraRay;
     private RaycastHit cameraHit;
-    
+
     void Start()
     {
-      
+
 
         rb = GetComponent<Rigidbody>();
-        
+
         Cursor.lockState = CursorLockMode.Locked;
-        respawnPoint = GameObject.Find("SpawnPoint");
+        respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
+     
         Application.targetFrameRate = 60;
 
         if (!isLocalPlayer)
@@ -45,21 +46,27 @@ public class PlayerMoveCamera : NetworkBehaviour
             cameraTransform.gameObject.SetActive(false);
         }
 
-       
+
     }
 
     void Update()
     {
+       
+
+
+
         if (!isLocalPlayer)
         {
             return;
         }
 
+        for (int i = 0; i < respawnPoint.Length; i++)
+        {
+            yDistance = Mathf.Abs(transform.position.y - respawnPoint[i].transform.position.y);
+        }
+     
 
-       
-       
-
-        float yDistance = Mathf.Abs(transform.position.y - respawnPoint.transform.position.y);
+        //float yDistance = Mathf.Abs(transform.position.y - respawnPoint.transform.position.y);
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
@@ -81,15 +88,16 @@ public class PlayerMoveCamera : NetworkBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
-        if (isGrounded) 
+        if (isGrounded)
         {
             RaycastHit hit;
             if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.7f))
             {
                 if (hit.collider.CompareTag("Breakable"))
                 {
-                    breakGlass.Play();
-                    CmdDestroyObject(hit.collider.gameObject);
+                    CmdPlayBreakSound();
+                    CmdDisableObject(hit.collider.gameObject);
+                   // CmdDestroyObject(hit.collider.gameObject);
 
                 }
             }
@@ -101,7 +109,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             Debug.Log(cameraHit.collider.name);
             if (cameraHit.collider.name == "Activator")
             {
-                if(Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
+                if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
                 {
                     CmdSpawnTiles();
                 }
@@ -113,9 +121,8 @@ public class PlayerMoveCamera : NetworkBehaviour
                     CmdResetTiles();
                 }
             }
-            
-        }
 
+        }
 
         float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
@@ -134,7 +141,8 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         if (yDistance >= 10)
         {
-            transform.position = respawnPoint.transform.position;
+            int random = Random.Range(0, respawnPoint.Length);
+            transform.position = respawnPoint[random].transform.position;
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -152,16 +160,35 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         TileSpawner.instance.ResetTiles();
     }
+    [Command]
+    public void CmdPlayBreakSound()
+    {
+        PlaySoun.instance.RpcPlaySounds();
+    }
 
     [Command]
-    void CmdDestroyObject(GameObject objectToDestroy)
+    void CmdDisableObject(GameObject objectToDestroy)
     {
+        RpcDisableObject(objectToDestroy);
+        StartCoroutine(DestroyObjectWithDelay(objectToDestroy));
+       
+    }
+    private IEnumerator DestroyObjectWithDelay(GameObject objectToDestroy)
+    {
+        yield return new WaitForSeconds(3f);
 
-        if (objectToDestroy != null && objectToDestroy.CompareTag("Breakable"))
+        if (objectToDestroy != null)
         {
-
             NetworkServer.Destroy(objectToDestroy);
         }
     }
-
+    [ClientRpc]
+    void RpcDisableObject(GameObject objectToDisable)
+    {
+        if (objectToDisable != null)
+        {
+            objectToDisable.GetComponent<BoxCollider>().enabled = false;
+            objectToDisable.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
 }
