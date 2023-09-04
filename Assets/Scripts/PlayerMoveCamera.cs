@@ -40,6 +40,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     public LayerMask pushableLayer;
     private GameObject pushableObject;
 
+    public GameObject breakableTiles;
     void Start()
     {
 
@@ -101,8 +102,9 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
         }
         cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        //Debug.DrawRay(cameraRay.origin, cameraRay.direction * 1f, Color.red);
 
-        if (Physics.Raycast(cameraRay, out cameraHit, 1f))
+        if (Physics.Raycast(cameraRay, out cameraHit, 1.5f))
         {
             //Debug.Log(cameraHit.collider.name);
             if (cameraHit.collider.name == "Activator")
@@ -121,7 +123,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
 
         }
-        if (Physics.Raycast(cameraRay, out pushHit, 1.5f, pushableLayer))
+        if (Physics.Raycast(cameraRay, out pushHit, 2f, pushableLayer))
         {
 
             pushableObject = pushHit.collider.gameObject;
@@ -300,8 +302,19 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (objectToDisable != null)
         {
+            GameObject tilesBroken = Instantiate(breakableTiles, objectToDisable.transform.position, objectToDisable.transform.rotation);
             objectToDisable.GetComponent<BoxCollider>().enabled = false;
             objectToDisable.GetComponent<MeshRenderer>().enabled = false;
+            StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
+        }
+    }
+    private IEnumerator DestroyBreakableTileWithDelay(GameObject objectToDestroy)
+    {
+        yield return new WaitForSeconds(3f);
+
+        if (objectToDestroy != null)
+        {
+            NetworkServer.Destroy(objectToDestroy);
         }
     }
 }
