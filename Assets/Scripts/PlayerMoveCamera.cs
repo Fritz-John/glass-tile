@@ -202,11 +202,11 @@ public class PlayerMoveCamera : NetworkBehaviour
         currentVelocity = rb.velocity;
 
         
-        if (movementDirection != Vector3.zero)
-        {
+
             Vector3 velocityChange = (desiredVelocity - rb.velocity);
             rb.AddForce(velocityChange, ForceMode.VelocityChange);
-        }
+        
+       
 
     }
 

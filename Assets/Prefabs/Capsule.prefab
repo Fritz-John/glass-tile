@@ -356,7 +356,7 @@ MonoBehaviour:
   lookSensitivity: 2
   cameraSmoothing: 5
   cameraTransform: {fileID: 5175070414252079543}
-  slideSpeed: 20
+  slideSpeed: 50
   pushableLayer:
     serializedVersion: 2
     m_Bits: 8
