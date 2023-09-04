@@ -106,7 +106,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         if (Physics.Raycast(cameraRay, out cameraHit, 1f))
         {
-            Debug.Log(cameraHit.collider.name);
+            //Debug.Log(cameraHit.collider.name);
             if (cameraHit.collider.name == "Activator")
             {
                 if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
