@@ -233,9 +233,9 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = transform.forward;
-            Vector3 relativeForce = slidingDirection * slideSpeed - rb.velocity;
+            Vector3 relativeForce = slidingDirection * slideSpeed;
 
-            rb.AddForce(relativeForce, ForceMode.Impulse);
+            rb.AddForce(relativeForce, ForceMode.Acceleration);
         }
     }
 
@@ -256,9 +256,9 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = -transform.forward;
-            Vector3 relativeForce = slidingDirection * 6f - rb.velocity;
+            Vector3 relativeForce = slidingDirection * 6f;
 
-            rb.AddForce(relativeForce, ForceMode.Impulse);
+            rb.AddForce(relativeForce, ForceMode.Acceleration);
         }
     }
 
