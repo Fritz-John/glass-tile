@@ -75,7 +75,7 @@ public class TileSpawner : NetworkBehaviour
 
         }
 
-        // Clear the list to remove references to the destroyed tiles
+        
         tiles.Clear();
     }
 
