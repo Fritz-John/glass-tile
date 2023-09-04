@@ -121,7 +121,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
 
         }
-        if (Physics.Raycast(cameraRay, out pushHit, 1f, pushableLayer))
+        if (Physics.Raycast(cameraRay, out pushHit, 1.5f, pushableLayer))
         {
 
             pushableObject = pushHit.collider.gameObject;
@@ -131,7 +131,11 @@ public class PlayerMoveCamera : NetworkBehaviour
                 CmdPushPlayer(pushableObject);
                 //pushableObject.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
             }
-
+            if (Input.GetKey(KeyCode.V) && isLocalPlayer)
+            {
+                CmdPullPlayer(pushableObject);
+                //pushableObject.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+            }
             Debug.Log(pushableObject);
         }
         else
@@ -227,11 +231,35 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = transform.forward;
+            Vector3 relativeForce = slidingDirection * slideSpeed - rb.velocity;
 
-            // Apply push force based on currentVelocity
-            rb.AddForce(slidingDirection * slideSpeed + currentVelocity, ForceMode.VelocityChange);
+            rb.AddForce(relativeForce, ForceMode.Impulse);
         }
     }
+
+    [Command]
+    public void CmdPullPlayer(GameObject obj)
+    {
+        if (obj != null)
+        {
+            RpcPullPlayer(obj);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcPullPlayer(GameObject objToPush)
+    {
+        Rigidbody rb = objToPush.GetComponent<Rigidbody>();
+
+        if (rb != null)
+        {
+            Vector3 slidingDirection = -transform.forward;
+            Vector3 relativeForce = slidingDirection * 6f - rb.velocity;
+
+            rb.AddForce(relativeForce, ForceMode.Impulse);
+        }
+    }
+
 
 
     [Command]
