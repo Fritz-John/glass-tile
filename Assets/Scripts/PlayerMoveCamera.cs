@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using Mirror.Examples.Pong;
 
 
 public class PlayerMoveCamera : NetworkBehaviour
@@ -24,6 +23,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     private float rotationX = 0f;
     float yDistance = 0;
     public float slideSpeed = 10f;
+    public float pullSpeed = 10f;
+    public float gravity = -9.81f;
     //public Transform respawnPoint;
 
     GameObject[] respawnPoint;
@@ -62,10 +63,6 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     void Update()
     {
-
-
-
-
         if (!isLocalPlayer)
         {
             return;
@@ -75,10 +72,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             yDistance = Mathf.Abs(transform.position.y - respawnPoint[i].transform.position.y);
         }
-
-
-        //float yDistance = Mathf.Abs(transform.position.y - respawnPoint.transform.position.y);
-     
+        
 
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.9f);
 
@@ -96,7 +90,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                 {
                     CmdPlayBreakSound();
                     CmdDisableObject(hit.collider.gameObject);
-                    // CmdDestroyObject(hit.collider.gameObject);
+                   
 
                 }
             }
@@ -106,7 +100,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         if (Physics.Raycast(cameraRay, out cameraHit, 1.5f))
         {
-            //Debug.Log(cameraHit.collider.name);
+           
             if (cameraHit.collider.name == "Activator")
             {
                 if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
@@ -131,12 +125,12 @@ public class PlayerMoveCamera : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.Q) && isLocalPlayer)
             {
                 CmdPushPlayer(pushableObject);
-                //pushableObject.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+                
             }
             if (Input.GetKey(KeyCode.V) && isLocalPlayer)
             {
                 CmdPullPlayer(pushableObject);
-                //pushableObject.GetComponent<Rigidbody>().AddForce(transform.forward * 10f, ForceMode.Impulse);
+               
             }
             Debug.Log(pushableObject);
         }
@@ -145,14 +139,6 @@ public class PlayerMoveCamera : NetworkBehaviour
 
             pushableObject = null;
         }
-
-
-
-
-        //    Vector3 playerMiddle = transform.position + Vector3.up * 0.1f;
-        //pushRay = new Ray(playerMiddle, transform.forward);
-
-        //Debug.DrawRay(playerMiddle, transform.forward * 1f, Color.red);
 
 
 
@@ -175,6 +161,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             int random = Random.Range(0, respawnPoint.Length);
             transform.position = respawnPoint[random].transform.position;
+            rb.velocity = Vector3.zero;
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -207,13 +194,19 @@ public class PlayerMoveCamera : NetworkBehaviour
         Vector3 desiredVelocity = new Vector3(movementDirection.x * moveSpeed, rb.velocity.y, movementDirection.z * moveSpeed);
         currentVelocity = rb.velocity;
 
-        
+        Vector3 customGravity = new Vector3(0f, gravity, 0f);
+
+         rb.AddForce(customGravity, ForceMode.Acceleration);
+
+
+        Debug.Log(movementDirection);
+        if (movementDirection != Vector3.zero)
+        {
 
             Vector3 velocityChange = (desiredVelocity - rb.velocity);
             rb.AddForce(velocityChange, ForceMode.VelocityChange);
-        
-       
-
+        }
+      
     }
 
     [Command]
@@ -233,9 +226,10 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = transform.forward;
-            Vector3 relativeForce = slidingDirection * slideSpeed;
+            //Vector3 relativeForce = slidingDirection * slideSpeed - rb.velocity;
 
-            rb.AddForce(relativeForce, ForceMode.Acceleration);
+            //rb.AddForce(relativeForce, ForceMode.Force);
+            rb.AddForce(slidingDirection * slideSpeed + currentVelocity, ForceMode.VelocityChange);
         }
     }
 
@@ -256,7 +250,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = -transform.forward;
-            Vector3 relativeForce = slidingDirection * 6f;
+            Vector3 relativeForce = slidingDirection * pullSpeed;
 
             rb.AddForce(relativeForce, ForceMode.Acceleration);
         }
@@ -302,9 +296,10 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (objectToDisable != null)
         {
-            GameObject tilesBroken = Instantiate(breakableTiles, objectToDisable.transform.position, objectToDisable.transform.rotation);
+            
             objectToDisable.GetComponent<BoxCollider>().enabled = false;
             objectToDisable.GetComponent<MeshRenderer>().enabled = false;
+            GameObject tilesBroken = Instantiate(breakableTiles, objectToDisable.transform.position, objectToDisable.transform.rotation);
             StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
         }
     }

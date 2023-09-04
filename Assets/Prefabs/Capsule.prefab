@@ -352,11 +352,13 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   moveSpeed: 4
-  jumpForce: 40
+  jumpForce: 80
   lookSensitivity: 2
   cameraSmoothing: 5
   cameraTransform: {fileID: 5175070414252079543}
-  slideSpeed: 30
+  slideSpeed: 100
+  pullSpeed: 30
+  gravity: -12
   pushableLayer:
     serializedVersion: 2
     m_Bits: 8

@@ -4724,7 +4724,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5477180277260908429}
-  - component: {fileID: 7791917613113429577}
+  - component: {fileID: 9153259528764117465}
   m_Layer: 2
   m_Name: Platform_Break
   m_TagString: Untagged
@@ -4826,7 +4826,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7791917613113429577
+--- !u!114 &9153259528764117465
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
