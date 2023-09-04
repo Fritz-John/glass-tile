@@ -81,7 +81,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         rb.velocity = new Vector3(movementDirection.x * moveSpeed, rb.velocity.y, movementDirection.z * moveSpeed);
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.7f);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.9f);
 
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
@@ -91,7 +91,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (isGrounded)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.7f))
+            if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.9f))
             {
                 if (hit.collider.CompareTag("Breakable"))
                 {
