@@ -27,6 +27,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     //public Transform respawnPoint;
 
     GameObject[] respawnPoint;
+    private Vector3 currentVelocity;
+
     private Vector3 currentCameraPosition;
     private Quaternion currentCameraRotation;
 
@@ -197,14 +199,12 @@ public class PlayerMoveCamera : NetworkBehaviour
         Vector3 movementDirection = (forwardDirection * verticalInput + rightDirection * horizontalInput).normalized;
 
         Vector3 desiredVelocity = new Vector3(movementDirection.x * moveSpeed, rb.velocity.y, movementDirection.z * moveSpeed);
+        currentVelocity = rb.velocity;
 
-
+        
         if (movementDirection != Vector3.zero)
         {
-
             Vector3 velocityChange = (desiredVelocity - rb.velocity);
-
-
             rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
 
@@ -227,9 +227,9 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (rb != null)
         {
             Vector3 slidingDirection = transform.forward;
-           
-            rb.AddForce(slidingDirection * slideSpeed, ForceMode.VelocityChange);
-            
+
+            // Apply push force based on currentVelocity
+            rb.AddForce(slidingDirection * slideSpeed + currentVelocity, ForceMode.VelocityChange);
         }
     }
 
