@@ -356,8 +356,6 @@ MonoBehaviour:
   lookSensitivity: 2
   cameraSmoothing: 5
   cameraTransform: {fileID: 5175070414252079543}
-  breakGlass: {fileID: 6253626129778148443, guid: c0e30b90ae629434b83ed7204f794f0e, type: 3}
-  breakglassClip: {fileID: 8300000, guid: 1ab40411c53a29d4a82cad73e17ee259, type: 3}
 --- !u!54 &3556377413599207906
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -373,4 +371,4 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
