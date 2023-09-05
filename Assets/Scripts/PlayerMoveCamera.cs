@@ -86,17 +86,18 @@ public class PlayerMoveCamera : NetworkBehaviour
         float sphereCastRadius = 0.1f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
 
+        PushableObject();
         BreakableObject();
         MovePlayerCamera();
         RespawnPoint();
-        PushableObject();  
+       
         ActivatorReset();
         MyInput();
 
         //SpeedControl();
 
       
-        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 4f, Color.red);
+        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 3f, Color.red);
 
 
         if (Input.GetKeyDown(KeyCode.P))
