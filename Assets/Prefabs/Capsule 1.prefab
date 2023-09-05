@@ -278,7 +278,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5175070415671410828}
-  m_Material: {fileID: 13400000, guid: 7dcbb90a0f6972d45a98d181291f0726, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -302,7 +302,7 @@ MonoBehaviour:
   syncInterval: 0
   PlayerCamera: {fileID: 5175070414252079543}
   rb: {fileID: 3556377413599207906}
-  Speed: 10
+  Speed: 3
   slideSpeed: 150
   Sensitivity: 5
   JumpForce: 40
