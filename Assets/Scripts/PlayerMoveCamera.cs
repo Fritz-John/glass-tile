@@ -162,7 +162,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (Physics.Raycast(cameraRay, out pushHit, 3f, pushableLayer))
         {
             pushableObject = pushHit.collider.gameObject;
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButton("Fire1"))
             {
                 CmdPushPlayer(pushableObject);
             }
@@ -247,7 +247,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
         }
 
     }
