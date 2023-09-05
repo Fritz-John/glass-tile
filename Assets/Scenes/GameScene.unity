@@ -4918,7 +4918,7 @@ GameObject:
   - component: {fileID: 1896044829}
   - component: {fileID: 1896044833}
   - component: {fileID: 1896044834}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pushabl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
