@@ -165,10 +165,8 @@ public class PlayerMoveCamera : NetworkBehaviour
             if (Input.GetButtonDown("Fire1"))
             {
                 CmdPushPlayer(pushableObject);
-            }
-           
+            }      
         }
-
     }
     private void RespawnPoint()
     {
