@@ -162,7 +162,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (Physics.Raycast(cameraRay, out pushHit, 3f, pushableLayer))
         {
             pushableObject = pushHit.collider.gameObject;
-            if (Input.GetButton("Fire1"))
+            if (Input.GetButtonDown("Fire1"))
             {
                 CmdPushPlayer(pushableObject);
             }
