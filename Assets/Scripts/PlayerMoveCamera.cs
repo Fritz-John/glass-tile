@@ -128,7 +128,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             return;
         }
-        if (!isNotMoving)
+        
             Move();
        
 
