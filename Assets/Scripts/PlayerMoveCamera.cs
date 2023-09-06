@@ -18,6 +18,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float smoothTime = 0.1f;
 
     [Header("Push Strenght")]
+   
+
     public float slideSpeed = 10f;
 
     [Header("Custom Gravity")]
@@ -26,7 +28,9 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
+   
     private Rigidbody rb;
+
     private Vector2 PlayerMouseInput;
     private float xRot;
     private bool isGrounded;
@@ -38,8 +42,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     private RaycastHit hit;
     private RaycastHit cameraHit;
     private RaycastHit pushHit;
-
-    public LayerMask pushableLayer;
+    
     private GameObject pushableObject;
 
     private float xRotVelocity = 0f;
@@ -48,38 +51,44 @@ public class PlayerMoveCamera : NetworkBehaviour
     private GameObject tilesBroken;
   
     private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
+
+    
+    [SerializeField] LayerMask pushableLayer;
+ 
+    
+ 
+    
+    Vector3 combined;
+    bool isNotMoving = false;
+
+
     void Start()
     {
-
-
+       
         rb = GetComponent<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
-        respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
-
-      
+        respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");     
+        
         if (!isLocalPlayer)
         {
-            cameraTransform.gameObject.SetActive(false);
+            cameraTransform.gameObject.SetActive(false);                    
         }
         if (isLocalPlayer)
         {
             CmdAssignPlayerAuthority(GetComponent<NetworkIdentity>());
-        }
-
+            
+        }   
     }
 
     void Update()
     {
-
-
-
         if (!isLocalPlayer)
-        {                           
+        {     
             return;
         }
+  
         
-
         cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
@@ -88,13 +97,12 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         PushableObject();
         BreakableObject();
-        MovePlayerCamera();
-        RespawnPoint();
-       
+        if (!isNotMoving)
+            MovePlayerCamera();
+
+        RespawnPoint();      
         ActivatorReset();
         MyInput();
-
-        //SpeedControl();
 
       
         Debug.DrawRay(cameraRay.origin, cameraRay.direction * 3f, Color.red);
@@ -103,24 +111,26 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Cursor.lockState = CursorLockMode.Locked;
+            isNotMoving = false;
         }
 
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
+            isNotMoving = true;
         }
     }
 
     private void FixedUpdate()
     {
-
         if (!isOwned)
         {
             return;
         }
-        Move();
-        
+        if (!isNotMoving)
+            Move();
+       
 
     }
     private void ActivatorReset()
@@ -157,17 +167,55 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
 
     }
+
+
+    //private void PushableObject()
+    //{
+    //    Vector3 halfExtents = new Vector3(0.5f, 0.5f, 1.5f);
+    //    RaycastHit hit;
+
+    //    if (Physics.BoxCast(transform.position, halfExtents, transform.forward, out hit, transform.rotation, 3f, pushableLayer))
+    //    {
+    //        pushableObject = hit.collider.gameObject;
+    //        if (Input.GetButtonDown("Fire1"))
+    //        {
+
+    //            CmdPushPlayer(pushableObject);
+    //        }
+    //    }
+    //}
     private void PushableObject()
-    { 
+    {
         if (Physics.Raycast(cameraRay, out pushHit, 3f, pushableLayer))
         {
             pushableObject = pushHit.collider.gameObject;
             if (Input.GetButtonDown("Fire1"))
             {
-                CmdPushPlayer(pushableObject);
-            }      
+                Rigidbody rb = pushableObject.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    Vector3 slidingDirection = transform.forward;
+                  
+                    //float maxPushSpeed = 100f;
+
+                    combined = slidingDirection * slideSpeed;
+                    //currentVelocity = rb.velocity;
+
+                    PushPlayer pushPlayer = GetComponent<PushPlayer>();
+                    pushPlayer.CmdPushPlayer(pushableObject, combined, ForceMode.VelocityChange);
+                    //if (rb.velocity.magnitude < maxPushSpeed)
+                    //{
+                                          
+                    //}
+
+
+                }
+               
+            }
         }
     }
+    
     private void RespawnPoint()
     {
         for (int i = 0; i < respawnPoint.Length; i++)
@@ -245,21 +293,10 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (isGrounded && Input.GetButtonDown("Jump"))
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
 
     }
-    private void SpeedControl()
-    {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (flatVel.magnitude > moveSpeed)
-        {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
-            rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
-        }
-     
-    }
-
 
     void MovePlayerCamera()
     {
@@ -283,37 +320,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
     }
 
-
-    [Command]
-    public void CmdPushPlayer(GameObject obj)
-    {
-        
-        if (obj != null)
-        {
-            RpcPushPlayer(obj);
-        }
-    }
-
-
-    [ClientRpc]
-    private void RpcPushPlayer(GameObject objToPush)
-    {
-        Rigidbody rb = objToPush.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            Vector3 slidingDirection = transform.forward;
-            float pushForce = slideSpeed;
-            float maxPushSpeed = 100f; 
-            currentVelocity = rb.velocity;
-
-           
-            if (rb.velocity.magnitude < maxPushSpeed)
-            {
-                rb.AddForce(slidingDirection * pushForce + playerCurrentVelocity + currentVelocity, ForceMode.Impulse);
-            }
-        }
-    }
+   
 
     #region PullPlayer
     //[Command]
@@ -400,3 +407,5 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
     }
 }
+
+
