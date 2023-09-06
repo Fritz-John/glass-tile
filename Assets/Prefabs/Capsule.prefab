@@ -756,11 +756,11 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.02
   moveSpeed: 5
-  jumpForce: 30
+  jumpForce: 35
   cameraTransform: {fileID: 5175070414252079543}
   lookSensitivity: 2
   smoothTime: 0.05
-  slideSpeed: 10
+  slideSpeed: 15
   gravity: -9.81
   breakableTiles: {fileID: 5136648797624544567, guid: e4b456df66493cc4ebf635ff265b3f6f, type: 3}
   pushableLayer:
