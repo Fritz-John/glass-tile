@@ -92,7 +92,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-        float sphereCastRadius = 0.1f;
+        float sphereCastRadius = 0.15f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
 
         
@@ -295,7 +295,6 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-
     }
 
     void MovePlayerCamera()
