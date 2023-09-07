@@ -25,7 +25,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Custom Gravity")]
     public float gravity = -9.81f;
 
-    [Header("Custom Gravity")]
+    [Header("Ground Drag")]
     public float groundDrag = 5;
 
     [Header("Prefab Breaked Tiles")]
