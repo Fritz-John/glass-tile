@@ -4110,7 +4110,7 @@ MonoBehaviour:
   breakablePrefab: {fileID: 2610007237797292009, guid: c0e30b90ae629434b83ed7204f794f0e, type: 3}
   nonBreakablePrefab: {fileID: 3605868742079368068, guid: 1aac5b4760a937b45aa3bdff97f8cb5f, type: 3}
   spacing: 4.5
-  rowCount: 100
+  rowCount: 20
   colCount: 2
   isActivated: 0
   activate: {fileID: 1032078703}

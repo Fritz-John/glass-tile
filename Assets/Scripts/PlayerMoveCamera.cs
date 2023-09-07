@@ -25,6 +25,9 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Custom Gravity")]
     public float gravity = -9.81f;
 
+    [Header("Custom Gravity")]
+    public float groundDrag = 5;
+
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
@@ -87,22 +90,28 @@ public class PlayerMoveCamera : NetworkBehaviour
         {     
             return;
         }
-  
         
+       
+
         cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         float sphereCastRadius = 0.15f;
+
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
 
-        
-            PushableObject();
-            BreakableObject();
-            MovePlayerCamera();
-            RespawnPoint();
-            ActivatorReset();
-            MyInput();
-        
+        if (isGrounded)
+            rb.drag = groundDrag;
+        else
+            rb.drag = 0;
+
+        MyInput();
+        PushableObject();
+        BreakableObject();
+        MovePlayerCamera();
+        RespawnPoint();
+        ActivatorReset();
+       
 
 
         Debug.DrawRay(cameraRay.origin, cameraRay.direction * 3f, Color.red);
