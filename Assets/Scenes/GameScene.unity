@@ -5060,6 +5060,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: NETWORK MANAGER (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6421835333712571892, guid: 031cb0c372f901849ae8be36666b49e8, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421835333712571892, guid: 031cb0c372f901849ae8be36666b49e8, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6421835333712571892, guid: 031cb0c372f901849ae8be36666b49e8, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8653201918688368826, guid: 031cb0c372f901849ae8be36666b49e8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
