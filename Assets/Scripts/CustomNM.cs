@@ -2,10 +2,29 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CustomNM : NetworkManager
 {
+
+   
+
     private List<Color> usedColors = new List<Color>();
+
+    [SerializeField] InputField HostportNumber;
+    [SerializeField] InputField HostipAddress;
+
+    [SerializeField] InputField ClientportNumber;
+    [SerializeField] InputField ClientipAddress;
+
+    kcp2k.KcpTransport netTrans;
+
+    public override void Start()
+    {
+        netTrans = GetComponent<kcp2k.KcpTransport>();
+    }
+
     public override void OnClientConnect()
     {
         base.OnClientConnect();
@@ -33,5 +52,22 @@ public class CustomNM : NetworkManager
         while (usedColors.Contains(randomColor));
 
         return randomColor;
+    }
+
+    public void Starthost()
+    {
+        networkAddress = HostipAddress.text;
+        netTrans.Port = ushort.Parse(HostportNumber.text);
+        StartHost();
+    }
+    public void Startclient()
+    {
+        networkAddress = ClientipAddress.text;
+        netTrans.Port = ushort.Parse(ClientportNumber.text);
+        StartClient();
+    }
+    public void SceneChanger(int num)
+    {
+        SceneManager.LoadScene(num);
     }
 }
