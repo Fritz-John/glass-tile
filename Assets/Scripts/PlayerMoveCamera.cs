@@ -108,7 +108,7 @@ public class PlayerMoveCamera : NetworkBehaviour
        
 
 
-            Debug.DrawRay(cameraRay.origin, cameraRay.direction * 3f, Color.red);
+            Debug.DrawRay(cameraRay.origin, cameraRay.direction * 1f, Color.red);
 
 
             if (Input.GetKeyDown(KeyCode.P))
@@ -133,15 +133,12 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             return;
         }
-        if (!PlayerNameChange.isRenaming)
-        {
+      
 
             Move();
-        }
-        else
-        {
-            rb.velocity = Vector3.zero;
-        }
+        
+        
+            
 
     }
     private void ActivatorReset()
@@ -197,7 +194,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     //}
     private void PushableObject()
     {
-        if (Physics.Raycast(cameraRay, out pushHit, 3f, pushableLayer))
+        if (Physics.Raycast(cameraRay, out pushHit, 1f, pushableLayer))
         {
             pushableObject = pushHit.collider.gameObject;
             if (Input.GetButtonDown("Fire1"))
@@ -215,7 +212,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (usedSpawnPoints.Count == respawnPoint.Length)
         {
-            // Reset the usedSpawnPoints list if you want to reuse them all
+       
             usedSpawnPoints.Clear();
         }
 
@@ -229,9 +226,9 @@ public class PlayerMoveCamera : NetworkBehaviour
             int random;
             do
             {
-                random = Random.Range(0, respawnPoint.Length); // Generate a random index
+                random = Random.Range(0, respawnPoint.Length);
             }
-            while (usedSpawnPoints.Contains(random)); // Keep generating until an unused point is found
+            while (usedSpawnPoints.Contains(random)); 
             usedSpawnPoints.Add(random);
             transform.position = respawnPoint[random].transform.position;
             rb.velocity = Vector3.zero;
@@ -243,19 +240,16 @@ public class PlayerMoveCamera : NetworkBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-        // when to jump
+       
         if (Input.GetKey(KeyCode.Space) && isGrounded)
         {
-            
-
             Jump();
-
         }
     }
     private void Move()
     {
       
-       if(isGrounded || AllowAirControl)
+       if(isGrounded || AllowAirControl &&   !PlayerNameChange.isRenaming)
         {
             Vector3 cameraForward = cameraTransform.forward;
 
@@ -275,9 +269,10 @@ public class PlayerMoveCamera : NetworkBehaviour
 
             rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
-        
+       
+            rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
 
-        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
+        
 
 
     }
