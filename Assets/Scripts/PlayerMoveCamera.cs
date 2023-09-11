@@ -11,6 +11,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float jumpForce = 10f;
     public float maxVelocityChange = 10.0f;
 
+    private float setMovespeed;
+
     [Header("Camera Transform")]
     public Transform cameraTransform;
 
@@ -28,7 +30,9 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
-   
+    [Header("Layer")]
+    [SerializeField] LayerMask pushableLayer;
+
     private Rigidbody rb;
 
     private Vector2 PlayerMouseInput;
@@ -49,23 +53,19 @@ public class PlayerMoveCamera : NetworkBehaviour
     private float horizontalInput;
     private float verticalInput;
     private GameObject tilesBroken;
-  
+
     private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
 
     private List<int> usedSpawnPoints = new List<int>();
-    [SerializeField] LayerMask pushableLayer;
+   
  
-    
- 
-    
-
-    bool isNotMoving = false;
 
 
     void Start()
     {
        
         rb = GetComponent<Rigidbody>();
+        setMovespeed = moveSpeed;
 
         Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");     
@@ -87,26 +87,21 @@ public class PlayerMoveCamera : NetworkBehaviour
         {     
             return;
         }
-
+        RespawnPoint();
+        float sphereCastRadius = 0.3f;
+        isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
         if (!PlayerNameChange.isRenaming)
         {
-
-
             cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-
-            float sphereCastRadius = 0.3f;
-
-            isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
-
+  
             MyInput();
             PushableObject();
             BreakableObject();
             MovePlayerCamera();
-            RespawnPoint();
+            
             ActivatorReset();
-       
-
+      
 
             Debug.DrawRay(cameraRay.origin, cameraRay.direction * 1f, Color.red);
 
@@ -114,17 +109,18 @@ public class PlayerMoveCamera : NetworkBehaviour
             if (Input.GetKeyDown(KeyCode.P))
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                isNotMoving = false;
+                
             }
 
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 Cursor.lockState = CursorLockMode.None;
-                isNotMoving = true;
+             
             }
 
         }
+       
     }
 
     private void FixedUpdate()
@@ -133,12 +129,9 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             return;
         }
-      
-
+     
             Move();
-        
-        
-            
+                
 
     }
     private void ActivatorReset()
@@ -175,23 +168,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
 
     }
-
-
-    //private void PushableObject()
-    //{
-    //    Vector3 halfExtents = new Vector3(0.5f, 0.5f, 1.5f);
-    //    RaycastHit hit;
-
-    //    if (Physics.BoxCast(transform.position, halfExtents, transform.forward, out hit, transform.rotation, 3f, pushableLayer))
-    //    {
-    //        pushableObject = hit.collider.gameObject;
-    //        if (Input.GetButtonDown("Fire1"))
-    //        {
-
-    //            CmdPushPlayer(pushableObject);
-    //        }
-    //    }
-    //}
+ 
     private void PushableObject()
     {
         if (Physics.Raycast(cameraRay, out pushHit, 1f, pushableLayer))
@@ -258,7 +235,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             cameraForward.Normalize();
 
 
-            Vector3 targetVelocity = (cameraForward * verticalInput + cameraTransform.right * horizontalInput) * moveSpeed;
+            Vector3 targetVelocity = (cameraForward * verticalInput + cameraTransform.right * horizontalInput) * setMovespeed;
 
 
             Vector3 velocity = rb.velocity;
@@ -270,10 +247,19 @@ public class PlayerMoveCamera : NetworkBehaviour
             rb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
        
-            rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
 
-        
+        if (PlayerNameChange.isRenaming && isGrounded)
+        {
+            setMovespeed = 0;                
+        }
+        else
+        {
+            setMovespeed = moveSpeed;         
+        }
 
+
+
+        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
 
     }
 
@@ -299,7 +285,6 @@ public class PlayerMoveCamera : NetworkBehaviour
     }
     private void PushBackward(GameObject rb)
     {
-
 
         Rigidbody rigidBody = rb.GetComponent<Rigidbody>();
 
@@ -459,6 +444,23 @@ public class PlayerMoveCamera : NetworkBehaviour
     //        float forceMagnitude = 1.0f; 
     //        Vector3 velocityChange = (desiredVelocity - rb.velocity) * forceMagnitude;
     //        rb.AddForce(velocityChange, ForceMode.VelocityChange);
+    //    }
+    //}
+    #endregion
+    #region Old push
+    //private void PushableObject()
+    //{
+    //    Vector3 halfExtents = new Vector3(0.5f, 0.5f, 1.5f);
+    //    RaycastHit hit;
+
+    //    if (Physics.BoxCast(transform.position, halfExtents, transform.forward, out hit, transform.rotation, 3f, pushableLayer))
+    //    {
+    //        pushableObject = hit.collider.gameObject;
+    //        if (Input.GetButtonDown("Fire1"))
+    //        {
+
+    //            CmdPushPlayer(pushableObject);
+    //        }
     //    }
     //}
     #endregion

@@ -32,9 +32,6 @@ public class PlayerNameChange : NetworkBehaviour
 
     private void Start()
     {
-
-      
-
         if (!isLocalPlayer)
         {
             wholeCanvas.SetActive(false);
