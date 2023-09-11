@@ -5,7 +5,7 @@ using Mirror;
 
 public class ColorChange : NetworkBehaviour
 {
-    [SyncVar(hook = nameof(OnColorChanged))][SerializeField] private Color displayColor;
+    [SyncVar(hook = nameof(OnColorChanged))] [SerializeField] private Color displayColor;
 
     [SerializeField] private MeshRenderer rend;
 
