@@ -88,6 +88,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             return;
         }
         RespawnPoint();
+        BreakableObject();
         float sphereCastRadius = 0.3f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
         if (!PlayerNameChange.isRenaming)
@@ -97,7 +98,7 @@ public class PlayerMoveCamera : NetworkBehaviour
   
             MyInput();
             PushableObject();
-            BreakableObject();
+            
             MovePlayerCamera();
             
             ActivatorReset();

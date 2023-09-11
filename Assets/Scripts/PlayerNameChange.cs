@@ -29,18 +29,18 @@ public class PlayerNameChange : NetworkBehaviour
     private GameObject wholeCanvas;
 
     public static bool isRenaming = false;
-
+    [SyncVar(hook = nameof(OnDisplayNameChanged))]
+    private string displayName = "DefaultName";
     private void Start()
     {
         if (!isLocalPlayer)
         {
             wholeCanvas.SetActive(false);
         }
-        if (isLocalPlayer)
-        {
+       
             playernameIN.text = gamertag.text;
             playerDisplayName.text = gamertag.text;
-        }
+        
     }
     public void Update()
     {
@@ -64,21 +64,26 @@ public class PlayerNameChange : NetworkBehaviour
         }
 
     }
-
+    private void OnDisplayNameChanged(string oldValue, string newValue)
+    {
+        playerDisplayName.text = newValue;
+        gamertag.text = newValue;
+    }
     public void Rename()
     {
         isRenaming = false;
         InputCanvas.SetActive(false);
    
         Cursor.lockState = CursorLockMode.Locked;
-        playerDisplayName.text = playernameIN.text;
+        //playerDisplayName.text = playernameIN.text;
         CmdChangeDisplayName(playernameIN.text);
     }
 
     [Command(requiresAuthority = false)]
     public void CmdChangeDisplayName(string playerName)
     {
-        RpcChangeName(playerName);
+        displayName = playerName;
+       // RpcChangeName(playerName);
     }
 
     [ClientRpc]
@@ -86,11 +91,4 @@ public class PlayerNameChange : NetworkBehaviour
     {     
         gamertag.text = playerName;    
     }
-
-
-
-
-
-
-
 }
