@@ -70,7 +70,7 @@ public class PlayerNameChange : NetworkBehaviour
                 playernameIN.text = inputText;
             }
         }
-        if (inputText.Contains("angelo") || inputText.Contains("sacramento") || inputText.Contains("cabrera"))
+        if (inputText.Contains("sacramento") || inputText.Contains("cabrera"))
         {
             playernameIN.text = "LOW BORN PEASANT";
         }
