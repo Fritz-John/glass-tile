@@ -10,6 +10,9 @@ public class PlayerNameChange : NetworkBehaviour
     [SyncVar(hook = nameof(OnDisplayNameChanged))]
     private string displayName = "DefaultName";
 
+    [SyncVar]
+    public bool isRenaming = false;
+
     [Header("Player Name Displayer Text")]
     [SerializeField]
     private Text playerDisplayName;
@@ -30,31 +33,22 @@ public class PlayerNameChange : NetworkBehaviour
     [SerializeField]
     private GameObject wholeCanvas;
 
-    public static bool isRenaming = false;
 
     string[] badWords = new string[] {"bobo", "bitch","tanga","gago","pakyu","fuck","inutil","tarantado", "tangina", "shit","bullshit" };
+
+    //public static bool isRenaming = false;
 
     private void Start()
     {
         if (!isLocalPlayer)
         {
             wholeCanvas.SetActive(false);
+          
         }
-       
-            playernameIN.text = gamertag.text;
-            playerDisplayName.text = gamertag.text;
-
-        if (!isRenaming && isLocalPlayer)
-        {
-            InputCanvas.SetActive(true);
-
-            isRenaming = true;
-            playernameIN.text = gamertag.text;
-
-            Cursor.lockState = CursorLockMode.None;
-
-        }
-
+        playernameIN.text = gamertag.text;
+        playerDisplayName.text = gamertag.text;
+        isRenaming = true;
+        Cursor.lockState = CursorLockMode.None;
     }
     public void Update()
     {

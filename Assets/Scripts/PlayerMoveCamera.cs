@@ -58,9 +58,9 @@ public class PlayerMoveCamera : NetworkBehaviour
     private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
 
     private List<int> usedSpawnPoints = new List<int>();
-   
- 
 
+
+    PlayerNameChange playerNameChange;
 
     void Start()
     {
@@ -69,8 +69,8 @@ public class PlayerMoveCamera : NetworkBehaviour
         setMovespeed = moveSpeed;
 
         Cursor.lockState = CursorLockMode.Locked;
-        respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");     
-        
+        respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        playerNameChange = GetComponent<PlayerNameChange>();
         if (!isLocalPlayer)
         {
             cameraTransform.gameObject.SetActive(false);                    
@@ -90,9 +90,10 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
         RespawnPoint();
         BreakableObject();
+
         float sphereCastRadius = 0.3f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
-        if (!PlayerNameChange.isRenaming)
+        if (!playerNameChange.isRenaming)
         {
             cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
@@ -231,7 +232,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     private void Move()
     {
       
-       if(isGrounded || AllowAirControl &&   !PlayerNameChange.isRenaming)
+       if(isGrounded || AllowAirControl &&   !playerNameChange.isRenaming)
         {
             Vector3 cameraForward = cameraTransform.forward;
 
@@ -253,7 +254,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
        
 
-        if (PlayerNameChange.isRenaming && isGrounded)
+        if (playerNameChange.isRenaming && isGrounded)
         {
             setMovespeed = 0;                
         }
