@@ -28,8 +28,6 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float gravity = -9.81f;
     public bool AllowAirControl = true;
 
-    [Header("Prefab Breaked Tiles")]
-    public GameObject breakableTiles;
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
@@ -53,9 +51,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     private float xRotVelocity = 0f;
     private float horizontalInput;
     private float verticalInput;
-    private GameObject tilesBroken;
-
-    private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
+   
 
     private List<int> usedSpawnPoints = new List<int>();
 
@@ -90,10 +86,11 @@ public class PlayerMoveCamera : NetworkBehaviour
             return;
         }
         RespawnPoint();
-        BreakableObject();
+        //BreakableObject();
 
-        float sphereCastRadius = 0.3f;
+        float sphereCastRadius = 0.1f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
+
 
         if (!playerNameChange.isRenaming)
         {
@@ -161,22 +158,22 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         }
     }
-    private void BreakableObject()
-    {
-        if (isGrounded)
-        {
-            if(hit.collider != null)
-            {
-                if (hit.collider.CompareTag("Breakable"))
-                {
-                    CmdPlayBreakSound();
-                    CmdDisableObject(hit.collider.gameObject);
-                }
-            }
+    //private void BreakableObject()
+    //{
+    //    if (isGrounded)
+    //    {
+    //        if(hit.collider != null)
+    //        {
+    //            if (hit.collider.CompareTag("Breakable"))
+    //            {
+    //                CmdPlayBreakSound();
+    //                CmdDisableObject(hit.collider.gameObject);
+    //            }
+    //        }
           
-        }
+    //    }
 
-    }
+    //}
  
     private void PushableObject()
     {
@@ -341,55 +338,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         TileSpawner.instance.ResetTiles();
     }
-    [Command]
-    public void CmdPlayBreakSound()
-    {
-        PlaySoun.instance.RpcPlaySounds();
-    }
-
-    [Command]
-    void CmdDisableObject(GameObject objectToDestroy)
-    {
-        RpcDisableObject(objectToDestroy);
-        StartCoroutine(DestroyObjectWithDelay(objectToDestroy));
-       
-    }
-    private IEnumerator DestroyObjectWithDelay(GameObject objectToDestroy)
-    {
-        yield return new WaitForSeconds(3f);
-
-        if (objectToDestroy != null)
-        {
-            NetworkServer.Destroy(objectToDestroy);
-        }
-    }
-    
-
-    [ClientRpc]
-    void RpcDisableObject(GameObject objectToDisable)
-    {
-        if (objectToDisable != null && !disabledObjects.ContainsKey(objectToDisable))
-        {
-            disabledObjects[objectToDisable] = true;
-
-            objectToDisable.GetComponent<BoxCollider>().enabled = false;
-            objectToDisable.GetComponent<MeshRenderer>().enabled = false;
-
-            tilesBroken = Instantiate(breakableTiles, objectToDisable.transform.position, objectToDisable.transform.rotation);
-            StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
-        }
-    }
-    private IEnumerator DestroyBreakableTileWithDelay(GameObject objectToDestroy)
-    {
-        yield return new WaitForSeconds(3f);
-
-        if (objectToDestroy != null)
-        {
-            NetworkServer.Destroy(objectToDestroy);
-        }
-    }
-
-
+   
 
     #region PullPlayer
     //[Command]

@@ -58,8 +58,6 @@ public class PlayerNameChange : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
           
         }
-
-
     }
     public void Update()
     {

@@ -37,8 +37,8 @@ public class CustomNM : NetworkManager
         usedColors.Add(newColor);
 
         colorChange.SetDisplayColor(newColor);
+    
 
-      
     }
 
     private Color GetUniqueRandomColor()

@@ -8,6 +8,7 @@ public class PlaySoun : NetworkBehaviour
     public AudioSource breakGlass;
     public AudioClip breakglassClip;
     public static PlaySoun instance;
+    public GameObject breakaBle;
 
     private void Awake()
     {
@@ -30,4 +31,6 @@ public class PlaySoun : NetworkBehaviour
         breakGlass.clip = breakglassClip;
         breakGlass.Play();
     }
+
+  
 }
