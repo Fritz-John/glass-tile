@@ -29,6 +29,7 @@ public class PlayerNameChange : NetworkBehaviour
     private GameObject wholeCanvas;
 
     public static bool isRenaming = false;
+
     [SyncVar(hook = nameof(OnDisplayNameChanged))]
     private string displayName = "DefaultName";
     private void Start()
@@ -40,7 +41,18 @@ public class PlayerNameChange : NetworkBehaviour
        
             playernameIN.text = gamertag.text;
             playerDisplayName.text = gamertag.text;
-        
+
+        if (!isRenaming)
+        {
+            InputCanvas.SetActive(true);
+
+            isRenaming = true;
+            playernameIN.text = gamertag.text;
+
+            Cursor.lockState = CursorLockMode.None;
+
+        }
+
     }
     public void Update()
     {
@@ -48,16 +60,7 @@ public class PlayerNameChange : NetworkBehaviour
             return;
 
 
-        if (Input.GetKeyDown(KeyCode.B) && !isRenaming)
-        {
-            InputCanvas.SetActive(true);
-           
-            isRenaming = true;
-            playernameIN.text = gamertag.text;
-
-            Cursor.lockState = CursorLockMode.None;
-
-        }
+      
         if (isRenaming && Input.GetKeyDown(KeyCode.Return))
         {
             Rename();
