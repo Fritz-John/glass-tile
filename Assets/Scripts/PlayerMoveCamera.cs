@@ -29,8 +29,6 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float gravity = -9.81f;
     public bool AllowAirControl = true;
 
-  
-   
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
