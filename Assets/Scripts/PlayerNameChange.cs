@@ -52,9 +52,11 @@ public class PlayerNameChange : NetworkBehaviour
         playernameIN.text = gamertag.text;
         playerDisplayName.text = gamertag.text;
         isRenaming = true;
+
         if (isLocalPlayer)
         {
             Cursor.lockState = CursorLockMode.None;
+          
         }
 
 
@@ -98,7 +100,7 @@ public class PlayerNameChange : NetworkBehaviour
         InputCanvas.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
-
+    
         CmdChangeDisplayName(playernameIN.text);
     }
 

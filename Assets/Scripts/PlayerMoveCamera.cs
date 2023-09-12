@@ -68,7 +68,8 @@ public class PlayerMoveCamera : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         setMovespeed = moveSpeed;
 
-        Cursor.lockState = CursorLockMode.Locked;
+
+        //Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
         playerNameChange = GetComponent<PlayerNameChange>();
         if (!isLocalPlayer)
