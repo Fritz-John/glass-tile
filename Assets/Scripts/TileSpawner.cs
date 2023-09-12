@@ -68,14 +68,13 @@ public class TileSpawner : NetworkBehaviour
     {
         reset.SetTrigger("reset");
         isActivated = false;
-        
+    
         foreach (var tile in tiles)
         {
-            NetworkServer.Destroy(tile);
+            if(tile != null)
+                NetworkServer.Destroy(tile);
 
-        }
-
-        
+        }   
         tiles.Clear();
     }
 

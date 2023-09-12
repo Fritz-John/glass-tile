@@ -93,6 +93,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         float sphereCastRadius = 0.3f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
+
         if (!playerNameChange.isRenaming)
         {
             cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
@@ -163,11 +164,15 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (isGrounded)
         {
-            if (hit.collider.CompareTag("Breakable"))
+            if(hit.collider != null)
             {
-                CmdPlayBreakSound();
-                CmdDisableObject(hit.collider.gameObject);
+                if (hit.collider.CompareTag("Breakable"))
+                {
+                    CmdPlayBreakSound();
+                    CmdDisableObject(hit.collider.gameObject);
+                }
             }
+          
         }
 
     }
