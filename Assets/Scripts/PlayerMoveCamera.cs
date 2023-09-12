@@ -23,17 +23,21 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Push Strenght")]
     public float slideSpeed = 10f;
     public float rangeDetect = 1f;
+    public float cooldownDuration = 1.0f;
 
     [Header("Custom Gravity")]
     public float gravity = -9.81f;
     public bool AllowAirControl = true;
 
+  
+   
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
 
     private Rigidbody rb;
-
+    private bool isCooldown = false;       
+    private float cooldownTimer = 0.0f;
     private Vector2 PlayerMouseInput;
     private float xRot;
     private bool isGrounded;
@@ -122,7 +126,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
 
         }
-       
+      
     }
 
     private void FixedUpdate()
@@ -183,14 +187,30 @@ public class PlayerMoveCamera : NetworkBehaviour
            
             if (Input.GetButtonDown("Fire1"))
             {
-               
-                Rigidbody rb = pushableObject.GetComponent<Rigidbody>();
+                if (!isCooldown)
+                {
+                    Rigidbody rb = pushableObject.GetComponent<Rigidbody>();
 
-                if (rb != null)               
-                    CmdPushPlayer(pushableObject);                  
-      
+                    if (rb != null)
+                        CmdPushPlayer(pushableObject);
+
+                    isCooldown = true;
+                    cooldownTimer = cooldownDuration;
+                }
+
             }
            
+        }
+        if (isCooldown)
+        {
+            cooldownTimer -= Time.deltaTime;
+
+
+            if (cooldownTimer <= 0)
+            {
+
+                isCooldown = false;
+            }
         }
     }
    
