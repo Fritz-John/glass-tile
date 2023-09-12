@@ -22,6 +22,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     [Header("Push Strenght")]
     public float slideSpeed = 10f;
+    public float rangeDetect = 1f;
 
     [Header("Custom Gravity")]
     public float gravity = -9.81f;
@@ -104,7 +105,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             ActivatorReset();
       
 
-            Debug.DrawRay(cameraRay.origin, cameraRay.direction * 1f, Color.red);
+            Debug.DrawRay(cameraRay.origin, cameraRay.direction * rangeDetect, Color.red);
 
 
             if (Input.GetKeyDown(KeyCode.P))
@@ -172,7 +173,7 @@ public class PlayerMoveCamera : NetworkBehaviour
  
     private void PushableObject()
     {
-        if (Physics.Raycast(cameraRay, out pushHit, 1f, pushableLayer))
+        if (Physics.Raycast(cameraRay, out pushHit, rangeDetect, pushableLayer))
         {
             pushableObject = pushHit.collider.gameObject;
            
