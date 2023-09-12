@@ -1225,7 +1225,7 @@ GameObject:
   - component: {fileID: 6622304217536365789}
   - component: {fileID: 2502475162568702981}
   m_Layer: 3
-  m_Name: Capsule
+  m_Name: RealPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1478,6 +1478,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  isRenaming: 0
   playerDisplayName: {fileID: 7304312364087441461}
   gamertag: {fileID: 8328396213846052266}
   playernameIN: {fileID: 7870038549142231358}

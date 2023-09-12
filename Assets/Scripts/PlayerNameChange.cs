@@ -10,8 +10,12 @@ public class PlayerNameChange : NetworkBehaviour
     [SyncVar(hook = nameof(OnDisplayNameChanged))]
     private string displayName = "DefaultName";
 
+  
+
     [SyncVar]
     public bool isRenaming = false;
+
+ 
 
     [Header("Player Name Displayer Text")]
     [SerializeField]
@@ -48,7 +52,12 @@ public class PlayerNameChange : NetworkBehaviour
         playernameIN.text = gamertag.text;
         playerDisplayName.text = gamertag.text;
         isRenaming = true;
-        Cursor.lockState = CursorLockMode.None;
+        if (isLocalPlayer)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+
     }
     public void Update()
     {
@@ -77,6 +86,7 @@ public class PlayerNameChange : NetworkBehaviour
 
 
     }
+  
     private void OnDisplayNameChanged(string oldValue, string newValue)
     {
         playerDisplayName.text = newValue;
@@ -86,9 +96,9 @@ public class PlayerNameChange : NetworkBehaviour
     {
         isRenaming = false;
         InputCanvas.SetActive(false);
-   
+
         Cursor.lockState = CursorLockMode.Locked;
-       
+
         CmdChangeDisplayName(playernameIN.text);
     }
 
@@ -96,7 +106,7 @@ public class PlayerNameChange : NetworkBehaviour
     public void CmdChangeDisplayName(string playerName)
     {
         displayName = playerName;
-      
+     
     }
 
     //[ClientRpc]
