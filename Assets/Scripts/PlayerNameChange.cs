@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class PlayerNameChange : NetworkBehaviour
 {
 
+    [SyncVar(hook = nameof(OnDisplayNameChanged))]
+    private string displayName = "DefaultName";
 
     [Header("Player Name Displayer Text")]
     [SerializeField]
@@ -30,8 +32,8 @@ public class PlayerNameChange : NetworkBehaviour
 
     public static bool isRenaming = false;
 
-    [SyncVar(hook = nameof(OnDisplayNameChanged))]
-    private string displayName = "DefaultName";
+    string[] badWords = new string[] {"bobo", "bitch","tanga","gago","pakyu","fuck","inutil","tarantado", "tangina", "shit","bullshit" };
+
     private void Start()
     {
         if (!isLocalPlayer)
@@ -42,7 +44,7 @@ public class PlayerNameChange : NetworkBehaviour
             playernameIN.text = gamertag.text;
             playerDisplayName.text = gamertag.text;
 
-        if (!isRenaming)
+        if (!isRenaming && isLocalPlayer)
         {
             InputCanvas.SetActive(true);
 
@@ -58,13 +60,27 @@ public class PlayerNameChange : NetworkBehaviour
     {
         if (!isLocalPlayer)
             return;
-
-
-      
+ 
         if (isRenaming && Input.GetKeyDown(KeyCode.Return))
         {
             Rename();
         }
+
+        string inputText = playernameIN.text.ToLower();
+        foreach (string s in badWords)
+        {
+            if (inputText.Contains(s))
+            {
+                string asteriskString = new string('*', s.Length);
+                inputText = inputText.Replace(s, asteriskString);
+                playernameIN.text = inputText;
+            }
+        }
+        if (inputText.Contains("angelo") || inputText.Contains("sacramento") || inputText.Contains("cabrera"))
+        {
+            playernameIN.text = "LOW BORN PEASANT";
+        }
+
 
     }
     private void OnDisplayNameChanged(string oldValue, string newValue)
@@ -78,7 +94,7 @@ public class PlayerNameChange : NetworkBehaviour
         InputCanvas.SetActive(false);
    
         Cursor.lockState = CursorLockMode.Locked;
-        //playerDisplayName.text = playernameIN.text;
+       
         CmdChangeDisplayName(playernameIN.text);
     }
 
@@ -86,12 +102,12 @@ public class PlayerNameChange : NetworkBehaviour
     public void CmdChangeDisplayName(string playerName)
     {
         displayName = playerName;
-       // RpcChangeName(playerName);
+      
     }
 
-    [ClientRpc]
-    public void RpcChangeName(string playerName)
-    {     
-        gamertag.text = playerName;    
-    }
+    //[ClientRpc]
+    //public void RpcChangeName(string playerName)
+    //{     
+    //    gamertag.text = playerName;    
+    //}
 }
