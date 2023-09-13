@@ -56,7 +56,7 @@ public class TileManager : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdPlayBreakSound()
     {
-        Debug.Log("Has been called");
+        //Debug.Log("Has been called");
         RpcPlaySounds();
     }
 
