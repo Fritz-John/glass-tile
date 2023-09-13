@@ -97,6 +97,11 @@ public class TileManager : NetworkBehaviour
         if (objectToDisable != null && !disabledObjects.ContainsKey(objectToDisable))
         {
             disabledObjects[objectToDisable] = true;
+            //BoxCollider[] gameObjects = GetComponents<BoxCollider>();
+
+            //foreach (BoxCollider coll in gameObjects) {
+            //    coll.enabled = false;  
+            //}
 
             objectToDisable.GetComponent<BoxCollider>().enabled = false;
             objectToDisable.GetComponent<MeshRenderer>().enabled = false;
