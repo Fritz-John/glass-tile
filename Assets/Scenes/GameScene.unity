@@ -9230,7 +9230,7 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 2610007237797292009, guid: c0e30b90ae629434b83ed7204f794f0e, type: 3}
+  - {fileID: 9132837174740341548, guid: 136121bfae3af194aabf2a177a26db96, type: 3}
   - {fileID: 3605868742079368068, guid: 1aac5b4760a937b45aa3bdff97f8cb5f, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
