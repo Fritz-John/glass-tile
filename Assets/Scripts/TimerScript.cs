@@ -8,7 +8,7 @@ public class TimerScript : NetworkBehaviour
     public Text timerText;
     [SyncVar] private float timer;
     public float setTimer = 600.0f; 
-    private bool isCountingDown = false;
+    [SyncVar] private bool isCountingDown = false;
 
     private void Start()
     {
