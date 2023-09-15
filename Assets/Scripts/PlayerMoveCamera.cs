@@ -59,13 +59,13 @@ public class PlayerMoveCamera : NetworkBehaviour
 
 
     PlayerNameChange playerNameChange;
-
+    TimerScript timerScript;
     void Start()
     {
        
         rb = GetComponent<Rigidbody>();
         setMovespeed = moveSpeed;
-
+        timerScript = FindObjectOfType<TimerScript>();
 
         //Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
@@ -148,6 +148,9 @@ public class PlayerMoveCamera : NetworkBehaviour
                 if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
                 {
                     CmdSpawnTiles();
+                
+                    timerScript.StartCountdown();
+                  
                 }
             }
             else if (cameraHit.collider.name == "Resetor")
@@ -155,6 +158,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                 if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
                 {
                     CmdResetTiles();
+                    timerScript.ResetCountdown();
                 }
             }
 
