@@ -1,6 +1,7 @@
 using Mirror;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,6 +21,8 @@ public class TileManager : NetworkBehaviour
 
     public AudioSource breakGlass;
     public AudioClip breakglassClip;
+
+    public float delay;
 
 
     void Start()
@@ -56,23 +59,11 @@ public class TileManager : NetworkBehaviour
     [Command(requiresAuthority = false)]
     public void CmdPlayBreakSound()
     {
-        //Debug.Log("Has been called");
+        
         RpcPlaySounds();
     }
 
-    [Command(requiresAuthority = false)]
-    private void CmdDestroy(GameObject breaks)
-    {
-  
-        RpcDestroy(breaks);
-    }
-    [ClientRpc]
-    private void RpcDestroy(GameObject breaks)
-    {
-        NetworkServer.Destroy(breaks);
-        tilesBroken = Instantiate(breakableTiles, breaks.transform.position, breaks.transform.rotation);
-            
-    }
+
     private IEnumerator DestroyObjectWithDelay(GameObject objectToDestroy)
     {
         yield return new WaitForSeconds(5f);
@@ -89,20 +80,18 @@ public class TileManager : NetworkBehaviour
         RpcDisableObject(objectToDestroy);
         StartCoroutine(DestroyObjectWithDelay(objectToDestroy));
         CmdPlayBreakSound();
-    }
 
+        TileSpawner.instance.RemoveTile(objectToDestroy);
+
+    } 
+  
     [ClientRpc]
     void RpcDisableObject(GameObject objectToDisable)
     {
         if (objectToDisable != null && !disabledObjects.ContainsKey(objectToDisable))
         {
             disabledObjects[objectToDisable] = true;
-            //BoxCollider[] gameObjects = GetComponents<BoxCollider>();
-
-            //foreach (BoxCollider coll in gameObjects) {
-            //    coll.enabled = false;  
-            //}
-
+          
             objectToDisable.GetComponent<BoxCollider>().enabled = false;
             objectToDisable.GetComponent<MeshRenderer>().enabled = false;
             

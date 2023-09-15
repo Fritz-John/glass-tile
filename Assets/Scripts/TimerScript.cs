@@ -6,9 +6,11 @@ using Mirror;
 public class TimerScript : NetworkBehaviour
 {
     public Text timerText;
-    [SyncVar] private float timer;
+    [SyncVar] public float timer;
     public float setTimer = 600.0f;
     [SyncVar] private bool isCountingDown = false;
+   
+
 
     private void Start()
     {
@@ -16,9 +18,8 @@ public class TimerScript : NetworkBehaviour
         {
             timer = setTimer;
         }
-    
+        
     }
-
     private void Update()
     {
         if (!isServer)
@@ -27,7 +28,13 @@ public class TimerScript : NetworkBehaviour
         if (timer > 0 && isCountingDown)
         {
             timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                timer = 0;
+
+            }
         }
+
 
         UpdateTimerDisplay();
     }
@@ -45,6 +52,7 @@ public class TimerScript : NetworkBehaviour
     public void RpcStartCountdown()
     {
         isCountingDown = true;
+       
     }
 
     [ClientRpc]

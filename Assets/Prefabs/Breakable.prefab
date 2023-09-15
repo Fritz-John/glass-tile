@@ -136,6 +136,7 @@ MonoBehaviour:
   breakableTiles: {fileID: 6417858194687015568, guid: 043c49f780091af498b01626d9ab3fae, type: 3}
   breakGlass: {fileID: -608867623229467240}
   breakglassClip: {fileID: 8300000, guid: 0afb2a3d76ccf19419d8ffc1f06c63d6, type: 3}
+  delay: 0
 --- !u!82 &-608867623229467240
 AudioSource:
   m_ObjectHideFlags: 0
@@ -156,8 +157,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 2
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -192,7 +193,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.98
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

@@ -1450,7 +1450,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.02
   moveSpeed: 5
-  jumpForce: 60
+  jumpForce: 65
   maxVelocityChange: 2
   cameraTransform: {fileID: 5175070414252079543}
   lookSensitivity: 2

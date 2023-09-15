@@ -154,7 +154,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                   
                 }
             }
-            else if (cameraHit.collider.name == "Resetor")
+            else if (cameraHit.collider.name == "Resetor" && !TileSpawner.instance.isDestroyingTiles)
             {
                 if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
                 {

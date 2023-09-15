@@ -2308,7 +2308,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   timerText: {fileID: 1308135241}
-  setTimer: 600
+  timer: 0
+  setTimer: 5
 --- !u!114 &558387615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4640,6 +4641,10 @@ MonoBehaviour:
   isActivated: 0
   activate: {fileID: 1032078703}
   reset: {fileID: 73877517}
+  timer: {fileID: 558387614}
+  isDestroyingTiles: 0
+  destroyTimer: 0.1
+  tilesBrokenPrefab: {fileID: 5136648797624544567, guid: e4b456df66493cc4ebf635ff265b3f6f, type: 3}
 --- !u!4 &1517858374
 Transform:
   m_ObjectHideFlags: 0
@@ -9932,6 +9937,7 @@ MonoBehaviour:
   spawnPrefabs:
   - {fileID: 9132837174740341548, guid: 136121bfae3af194aabf2a177a26db96, type: 3}
   - {fileID: 3605868742079368068, guid: 1aac5b4760a937b45aa3bdff97f8cb5f, type: 3}
+  - {fileID: 5136648797624544567, guid: e4b456df66493cc4ebf635ff265b3f6f, type: 3}
   snapshotSettings:
     bufferTimeMultiplier: 2
     bufferLimit: 32
