@@ -87,6 +87,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         {     
             return;
         }
+        
         RespawnPoint();
         //BreakableObject();
 
@@ -149,7 +150,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                 {
                     CmdSpawnTiles();
                 
-                    timerScript.StartCountdown();
+                    timerScript.CmdStartCountdown();
                   
                 }
             }
@@ -158,7 +159,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                 if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
                 {
                     CmdResetTiles();
-                    timerScript.ResetCountdown();
+                    timerScript.CmdStopCountdown();
                 }
             }
 
