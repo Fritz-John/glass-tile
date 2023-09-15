@@ -23,13 +23,14 @@ public class TileSpawner : NetworkBehaviour
     GameObject tile;
 
     List<GameObject> tiles = new List<GameObject>();
-
+    
     public TimerScript timer;
     public bool isDestroyingTiles = false;
-    private int currentTileIndex = 0;
+ 
     public float destroyTimer = 1.0f;
 
     public GameObject tilesBrokenPrefab;
+
 
     private void Awake()
     {
@@ -49,32 +50,42 @@ public class TileSpawner : NetworkBehaviour
             if (!isDestroyingTiles)
             {
                 isDestroyingTiles = true;
+             
                 StartCoroutine(DestroyTilesWithDelay());
             }
         }
-        
+       // Debug.Log(tiles.Count);
     }
 
     private IEnumerator DestroyTilesWithDelay()
     {
-        foreach (var tile in tiles)
-        {
-            if (tile != null)
-            {
-                GameObject tilesBroken = Instantiate(tilesBrokenPrefab, tile.transform.position, tile.transform.rotation);   
-                
-                NetworkServer.Spawn(tilesBroken);
+        List<GameObject> tilesCopy = new List<GameObject>(tiles);
 
-                RpcexplodeTiles(tilesBroken);
-                StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
-                NetworkServer.Destroy(tile);
-                yield return new WaitForSeconds(destroyTimer); // Wait for 1 second before destroying the next tile.
+        foreach (var tile in tilesCopy)
+        {
+                
+            if (tile != null && tiles.Contains(tile))
+            {         
+                GameObject tilesBroken = Instantiate(tilesBrokenPrefab, tile.transform.position, tile.transform.rotation);
+                if (tilesBroken != null)
+                {
+                    NetworkServer.Spawn(tilesBroken);
+
+                    RpcexplodeTiles(tilesBroken);
+                    StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
+
+                    tiles.Remove(tile);
+                  
+                    yield return new WaitForSeconds(destroyTimer);
+                    NetworkServer.Destroy(tile);
+                }
             }
         }
+
         isDestroyingTiles = false;
         tiles.Clear();
     }
- 
+
 
     [ClientRpc]
     void RpcexplodeTiles(GameObject tilesBroken)
@@ -159,7 +170,7 @@ public class TileSpawner : NetworkBehaviour
                 NetworkServer.Destroy(tile);
 
         }
-        currentTileIndex = 0;
+
         tiles.Clear();
     }
     public void RemoveTile(GameObject tileToRemove)

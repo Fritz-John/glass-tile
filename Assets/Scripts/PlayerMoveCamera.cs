@@ -7,6 +7,12 @@ using UnityEngine.UI;
 public class PlayerMoveCamera : NetworkBehaviour
 {
     [Header("Player Movement")]
+    public int playerLife = 3;
+    //public Image lifeImage; // Assign the heart image to this field in the Unity Inspector
+    public Transform heartContainer;
+    public GameObject heartPrefab;
+
+    [Header("Player Movement")]
     public float moveSpeed = 5f;
     public float jumpForce = 10f;
     public float maxVelocityChange = 10.0f;
@@ -39,8 +45,12 @@ public class PlayerMoveCamera : NetworkBehaviour
     private Vector2 PlayerMouseInput;
     private float xRot;
     private bool isGrounded;
+
     private float yDistance = 0;
+    private float yDistanceDeath = 0;
+
     private GameObject[] respawnPoint;
+    private GameObject[] deathRespawnPoint;
     private Vector3 currentVelocity;
     private Vector3 playerCurrentVelocity;
     private Ray cameraRay;
@@ -69,6 +79,8 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         //Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
+        deathRespawnPoint = GameObject.FindGameObjectsWithTag("DeathSpawn");
+
         playerNameChange = GetComponent<PlayerNameChange>();
         if (!isLocalPlayer)
         {
@@ -78,7 +90,9 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             CmdAssignPlayerAuthority(GetComponent<NetworkIdentity>());
             
-        }   
+        }
+
+        SetPlayerLife();
     }
 
     void Update()
@@ -87,8 +101,16 @@ public class PlayerMoveCamera : NetworkBehaviour
         {     
             return;
         }
+
+        if (playerLife <= 1)
+        {
+            DeathRespawnPoint();
+        }
+        else
+        {
+            RespawnPoint();
+        }
         
-        RespawnPoint();
         //BreakableObject();
 
         float sphereCastRadius = 0.1f;
@@ -123,7 +145,8 @@ public class PlayerMoveCamera : NetworkBehaviour
                 Cursor.lockState = CursorLockMode.None;
              
             }
-
+          
+            //Debug.Log(playerLife);
         }
       
     }
@@ -139,19 +162,46 @@ public class PlayerMoveCamera : NetworkBehaviour
                 
 
     }
+
+    void SetPlayerLife()
+    {
+        if (!isServer)
+            return;
+
+
+        foreach (Transform child in heartContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+
+        for (int i = 0; i < playerLife; i++)
+            {
+                GameObject heart = Instantiate(heartPrefab, heartContainer);
+                heart.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
+            }
+      
+    }
+    public void PlayerHit()
+    {
+        if (playerLife > 0)
+        {
+            playerLife--;
+            SetPlayerLife(); 
+        }
+    }
+
     private void ActivatorReset()
     {
         if (Physics.Raycast(cameraRay, out cameraHit, 1.5f))
         {
-
             if (cameraHit.collider.name == "Activator")
             {
                 if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
                 {
                     CmdSpawnTiles();
                 
-                    timerScript.CmdStartCountdown();
-                  
+                    timerScript.CmdStartCountdown();               
                 }
             }
             else if (cameraHit.collider.name == "Resetor" && !TileSpawner.instance.isDestroyingTiles)
@@ -162,7 +212,6 @@ public class PlayerMoveCamera : NetworkBehaviour
                     timerScript.CmdStopCountdown();
                 }
             }
-
         }
     }
     //private void BreakableObject()
@@ -240,10 +289,32 @@ public class PlayerMoveCamera : NetworkBehaviour
             while (usedSpawnPoints.Contains(random)); 
             usedSpawnPoints.Add(random);
             transform.position = respawnPoint[random].transform.position;
+            PlayerHit();
             rb.velocity = Vector3.zero;
         }
     }
-    
+    private void DeathRespawnPoint()
+    {
+ 
+        for (int i = 0; i < deathRespawnPoint.Length; i++)
+        {
+            yDistanceDeath = Mathf.Abs(transform.position.y - deathRespawnPoint[i].transform.position.y);
+        }
+
+        if (yDistanceDeath >= 10)
+        {
+            int random;
+
+            random = Random.Range(0, deathRespawnPoint.Length);
+
+            transform.position = deathRespawnPoint[random].transform.position;     
+            if (playerLife > 0)
+            {
+                PlayerHit();
+            }
+            rb.velocity = Vector3.zero;
+        }
+    }
     private void MyInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
