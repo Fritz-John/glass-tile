@@ -2309,7 +2309,7 @@ MonoBehaviour:
   syncInterval: 0
   timerText: {fileID: 1308135241}
   timer: 0
-  setTimer: 5
+  setTimer: 60
 --- !u!114 &558387615
 MonoBehaviour:
   m_ObjectHideFlags: 0
