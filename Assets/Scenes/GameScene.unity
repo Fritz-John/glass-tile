@@ -5158,7 +5158,7 @@ MonoBehaviour:
   reset: {fileID: 73877517}
   timer: {fileID: 558387614}
   isDestroyingTiles: 0
-  destroyTimer: 0.1
+  destroyTimer: 0.2
   tilesBrokenPrefab: {fileID: 5136648797624544567, guid: e4b456df66493cc4ebf635ff265b3f6f, type: 3}
 --- !u!4 &1517858374
 Transform:
