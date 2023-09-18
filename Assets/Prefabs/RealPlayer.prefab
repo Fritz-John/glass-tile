@@ -1524,7 +1524,9 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.02
+  playerCamera: {fileID: 5175070414252079541}
   playerLife: 3
+  setplayerLife: 0
   heartContainer: {fileID: 8737057180053083922}
   heartContainerPreview: {fileID: 5434329082014287562}
   heartPrefab: {fileID: 8947044197731279190, guid: a1221c6706ab3414db6eb27a4456de4c, type: 3}

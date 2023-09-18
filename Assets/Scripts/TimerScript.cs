@@ -9,16 +9,15 @@ public class TimerScript : NetworkBehaviour
     [SyncVar] public float timer;
     public float setTimer = 600.0f;
     [SyncVar] private bool isCountingDown = false;
-   
 
-
+    TileSpawner tileSpawner;
     private void Start()
     {
         if (isServer)
         {
             timer = setTimer;
         }
-        
+        tileSpawner = FindObjectOfType<TileSpawner>();
     }
     private void Update()
     {
@@ -31,10 +30,15 @@ public class TimerScript : NetworkBehaviour
             if (timer < 0)
             {
                 timer = 0;
-
+                isCountingDown = false;
+                if (!tileSpawner.isDestroyingTiles)
+                {
+                    tileSpawner.isDestroyingTiles = true;
+                    StartCoroutine(tileSpawner.DestroyTilesWithDelay());
+                }
             }
         }
-
+       
 
         UpdateTimerDisplay();
     }

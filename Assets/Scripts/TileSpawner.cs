@@ -44,19 +44,19 @@ public class TileSpawner : NetworkBehaviour
     }
     private void Update()
     {
-        if(timer.timer <= 0 )
-        {
-            if (!isDestroyingTiles)
-            {
-                isDestroyingTiles = true;
+        //if(timer.timer <= 0  )
+        //{
+        //    if (!isDestroyingTiles)
+        //    {
+        //        isDestroyingTiles = true;
              
-                StartCoroutine(DestroyTilesWithDelay());
-            }
-        }
+        //        StartCoroutine(DestroyTilesWithDelay());
+        //    }
+        //}
        // Debug.Log(tiles.Count);
     }
 
-    private IEnumerator DestroyTilesWithDelay()
+    public IEnumerator DestroyTilesWithDelay()
     {
         List<GameObject> tilesCopy = new List<GameObject>(tiles);
         
@@ -80,7 +80,13 @@ public class TileSpawner : NetworkBehaviour
                 }
             }
         }
-
+        PlayerMoveCamera[] playerMoveCamera = FindObjectsOfType<PlayerMoveCamera>();
+        foreach(PlayerMoveCamera player in playerMoveCamera)
+        {
+            player.CmdSetPlayerHealth(player.setplayerLife);
+        }
+       
+        
         isDestroyingTiles = false;
         tiles.Clear();
     }

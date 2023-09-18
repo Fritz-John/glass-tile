@@ -6,10 +6,12 @@ using UnityEngine.UI;
 
 public class PlayerMoveCamera : NetworkBehaviour
 {
+    public Camera playerCamera;
     [Header("Player Health")]
 
     [SyncVar]
     public int playerLife = 3;
+    public int setplayerLife;
     public Transform heartContainer; 
     public Transform heartContainerPreview;
     public GameObject heartPrefab;
@@ -83,16 +85,25 @@ public class PlayerMoveCamera : NetworkBehaviour
         //Cursor.lockState = CursorLockMode.Locked;
         respawnPoint = GameObject.FindGameObjectsWithTag("SpawnPoint");
         deathRespawnPoint = GameObject.FindGameObjectsWithTag("DeathSpawn");
-
+        setplayerLife = playerLife;
         playerNameChange = GetComponent<PlayerNameChange>();
         if (!isLocalPlayer)
         {
-            cameraTransform.gameObject.SetActive(false);                    
+            cameraTransform.gameObject.SetActive(false);
+           
         }
         if (isLocalPlayer)
         {
             CmdAssignPlayerAuthority(GetComponent<NetworkIdentity>());
-            
+            TextFollowPlayer[] textFollower = FindObjectsOfType<TextFollowPlayer>();
+            foreach (TextFollowPlayer t in textFollower)
+            {
+                if (t != null)
+                {
+                    t.SetPlayerCamera(playerCamera.transform);
+                }
+            }
+           
         }
 
         CmdSetPlayerHealth(playerLife);
@@ -176,7 +187,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     }
 
     [Command(requiresAuthority = false)]
-    void CmdSetPlayerHealth(int newHealth)
+    public void CmdSetPlayerHealth(int newHealth)
     {  
         playerLife = newHealth;
      
@@ -237,6 +248,14 @@ public class PlayerMoveCamera : NetworkBehaviour
                     timerScript.CmdStopCountdown();
                 }
             }
+            else if (cameraHit.collider.name == "TpSpawn" && !TileSpawner.instance.isDestroyingTiles && playerLife > 0)
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    //CmdResetTiles();
+                    SpawnNow();
+                }
+            }
         }
     }
     //private void BreakableObject()
@@ -289,6 +308,19 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
         }
     }
+
+    private void SpawnNow()
+    {
+        int random;
+        do
+        {
+            random = Random.Range(0, respawnPoint.Length);
+        }
+        while (usedSpawnPoints.Contains(random));
+        usedSpawnPoints.Add(random);
+        transform.position = respawnPoint[random].transform.position;
+        rb.velocity = Vector3.zero;
+    }
    
     private void RespawnPoint()
     {
@@ -305,16 +337,9 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         if (yDistance >= 10)
         {
-            int random;
-            do
-            {
-                random = Random.Range(0, respawnPoint.Length);
-            }
-            while (usedSpawnPoints.Contains(random)); 
-            usedSpawnPoints.Add(random);
-            transform.position = respawnPoint[random].transform.position;
+            SpawnNow();
             PlayerHit();
-            rb.velocity = Vector3.zero;
+         
         }
     }
     private void DeathRespawnPoint()
