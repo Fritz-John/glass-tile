@@ -7,8 +7,8 @@ using UnityEngine.UI;
 public class PlayerMoveCamera : NetworkBehaviour
 {
     public Camera playerCamera;
-    [Header("Player Health")]
 
+    [Header("Player Health")]
     [SyncVar]
     public int playerLife = 3;
     public int setplayerLife;
@@ -75,6 +75,9 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     PlayerNameChange playerNameChange;
     TimerScript timerScript;
+
+ 
+
     void Start()
     {
        
@@ -225,23 +228,27 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
     }
 
-  
-
+ 
     private void ActivatorReset()
-    {
+    {   
         if (Physics.Raycast(cameraRay, out cameraHit, 1.5f))
         {
+                
             if (cameraHit.collider.name == "Activator")
             {
+             
                 if (Input.GetKeyDown(KeyCode.E) && !TileSpawner.instance.isActivated)
                 {
+
                     CmdSpawnTiles();
-                
-                    timerScript.CmdStartCountdown();               
+
+                    timerScript.CmdStartCountdown();
                 }
-            }
+            }   
+
             else if (cameraHit.collider.name == "Resetor" && !TileSpawner.instance.isDestroyingTiles)
             {
+
                 if (Input.GetKeyDown(KeyCode.E) && TileSpawner.instance.isActivated)
                 {
                     CmdResetTiles();
@@ -252,10 +259,11 @@ public class PlayerMoveCamera : NetworkBehaviour
             {
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    //CmdResetTiles();
                     SpawnNow();
                 }
             }
+          
+
         }
     }
     //private void BreakableObject()

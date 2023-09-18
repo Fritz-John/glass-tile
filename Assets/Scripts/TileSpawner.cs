@@ -18,8 +18,8 @@ public class TileSpawner : NetworkBehaviour
     [SyncVar]
     public bool isActivated = false;
 
-    public Animator activate;
-    public Animator reset;
+    //public Animator activate;
+    //public Animator reset;
     GameObject tile;
 
     List<GameObject> tiles = new List<GameObject>();
@@ -137,7 +137,7 @@ public class TileSpawner : NetworkBehaviour
     }
     public void SpawnTiles()
     {
-        activate.SetTrigger("isActivate");
+       // activate.SetTrigger("isActivate");
         isActivated = true;
         
         for (int row = 0; row < rowCount; row++)
@@ -168,7 +168,7 @@ public class TileSpawner : NetworkBehaviour
 
     public void ResetTiles()
     {
-        reset.SetTrigger("reset");
+        //reset.SetTrigger("reset");
         isActivated = false;
     
         foreach (var tile in tiles)
