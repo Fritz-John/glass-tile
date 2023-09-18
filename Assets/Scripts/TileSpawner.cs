@@ -30,7 +30,7 @@ public class TileSpawner : NetworkBehaviour
     public float destroyTimer = 1.0f;
     public GameObject tilesBrokenPrefab;
 
-
+    public TimerScript timerScript;
     private void Awake()
     {
         instance = this;
@@ -85,9 +85,10 @@ public class TileSpawner : NetworkBehaviour
         {
             player.CmdSetPlayerHealth(player.setplayerLife);
         }
-       
-        
+
+        timerScript.CmdStopCountdown();
         isDestroyingTiles = false;
+        isActivated = false; 
         tiles.Clear();
     }
 

@@ -179,7 +179,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     public void PlayerHit()
     {
-        if (playerLife > 0)
+        if (playerLife > 0 && TileSpawner.instance.isActivated)
         {
             playerLife--;
             CmdSetPlayerHealth(playerLife);
