@@ -28,7 +28,6 @@ public class TileSpawner : NetworkBehaviour
     public bool isDestroyingTiles = false;
  
     public float destroyTimer = 1.0f;
-
     public GameObject tilesBrokenPrefab;
 
 
@@ -60,24 +59,24 @@ public class TileSpawner : NetworkBehaviour
     private IEnumerator DestroyTilesWithDelay()
     {
         List<GameObject> tilesCopy = new List<GameObject>(tiles);
+        
 
         foreach (var tile in tilesCopy)
         {
-                
+          
             if (tile != null && tiles.Contains(tile))
-            {         
+            {
                 GameObject tilesBroken = Instantiate(tilesBrokenPrefab, tile.transform.position, tile.transform.rotation);
-                if (tilesBroken != null)
+                if (tile != null)
                 {
                     NetworkServer.Spawn(tilesBroken);
 
-                    RpcexplodeTiles(tilesBroken);
-                    StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken));
-
-                    tiles.Remove(tile);
-                  
+                    RpcexplodeTiles(tilesBroken,tile);
+                    StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken, tile));
+              
                     yield return new WaitForSeconds(destroyTimer);
-                    NetworkServer.Destroy(tile);
+        
+                    tiles.Remove(tile);
                 }
             }
         }
@@ -86,15 +85,15 @@ public class TileSpawner : NetworkBehaviour
         tiles.Clear();
     }
 
-
     [ClientRpc]
-    void RpcexplodeTiles(GameObject tilesBroken)
+    void RpcexplodeTiles(GameObject tilesBroken, GameObject originalTile)
     {
+        originalTile.GetComponent<BoxCollider>().enabled = false;
+        originalTile.GetComponent<MeshRenderer>().enabled = false;
         ExplodeForce(tilesBroken);
     }
     void ExplodeForce(GameObject tilesBroken)
-    {
-        
+    {     
         float explosionForce = 200f;
         float explosionRadius = 5.0f;
         Vector3 explosionPosition = tilesBroken.transform.position;
@@ -119,13 +118,14 @@ public class TileSpawner : NetworkBehaviour
         }
        
     }
-    private IEnumerator DestroyBreakableTileWithDelay(GameObject objectToDestroy)
+    private IEnumerator DestroyBreakableTileWithDelay(GameObject objectToDestroy, GameObject originalTile)
     {
         yield return new WaitForSeconds(3f);
 
         if (objectToDestroy != null)
         {
             NetworkServer.Destroy(objectToDestroy);
+            NetworkServer.Destroy(originalTile);
         }
     }
     public void SpawnTiles()

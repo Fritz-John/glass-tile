@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 public class PlayerMoveCamera : NetworkBehaviour
 {
-    [Header("Player Movement")]
+    [Header("Player Health")]
+
+    [SyncVar]
     public int playerLife = 3;
-    //public Image lifeImage; // Assign the heart image to this field in the Unity Inspector
-    public Transform heartContainer;
+    public Transform heartContainer; 
+    public Transform heartContainerPreview;
     public GameObject heartPrefab;
+
 
     [Header("Player Movement")]
     public float moveSpeed = 5f;
@@ -92,7 +95,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             
         }
 
-        SetPlayerLife();
+        CmdSetPlayerHealth(playerLife);
     }
 
     void Update()
@@ -163,33 +166,55 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     }
 
-    void SetPlayerLife()
-    {
-        if (!isServer)
-            return;
-
-
-        foreach (Transform child in heartContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-
-        for (int i = 0; i < playerLife; i++)
-            {
-                GameObject heart = Instantiate(heartPrefab, heartContainer);
-                heart.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
-            }
-      
-    }
     public void PlayerHit()
     {
         if (playerLife > 0)
         {
             playerLife--;
-            SetPlayerLife(); 
+            CmdSetPlayerHealth(playerLife);
         }
     }
+
+    [Command(requiresAuthority = false)]
+    void CmdSetPlayerHealth(int newHealth)
+    {  
+        playerLife = newHealth;
+     
+        RpcSetPlayerLife(playerLife);
+    }
+    [ClientRpc]
+    void RpcSetPlayerLife(int newHealth)
+    {
+        UpdateUI(newHealth);
+    }
+    void UpdateUI(int newHealth)
+    {
+        foreach (Transform child in heartContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Transform childs in heartContainerPreview)
+        {
+            Destroy(childs.gameObject);
+
+        }
+
+        for (int i = 0; i < newHealth; i++)
+        {
+            GameObject heart = Instantiate(heartPrefab, heartContainer);
+            heart.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
+        }
+
+        for (int i = 0; i < newHealth; i++)
+        {
+            GameObject hearts = Instantiate(heartPrefab, heartContainerPreview);
+            hearts.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
+            NetworkServer.Spawn(hearts);
+        }
+    }
+
+  
 
     private void ActivatorReset()
     {
@@ -229,8 +254,7 @@ public class PlayerMoveCamera : NetworkBehaviour
           
     //    }
 
-    //}
- 
+    //}  
     private void PushableObject()
     {
         if (Physics.Raycast(cameraRay, out pushHit, rangeDetect, pushableLayer))
