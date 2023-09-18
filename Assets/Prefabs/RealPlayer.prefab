@@ -1525,7 +1525,6 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.02
   playerCamera: {fileID: 5175070414252079541}
-  glowingMaterial: {fileID: 2100000, guid: 69bd5e3ba8ef40e4cb42848cb237700a, type: 2}
   playerLife: 3
   setplayerLife: 0
   heartContainer: {fileID: 8737057180053083922}

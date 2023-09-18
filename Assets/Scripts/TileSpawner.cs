@@ -31,6 +31,8 @@ public class TileSpawner : NetworkBehaviour
     public GameObject tilesBrokenPrefab;
 
     public TimerScript timerScript;
+    public PlayerCounter playerCount;
+    public bool startedGame = false;
     private void Awake()
     {
         instance = this;
@@ -87,6 +89,7 @@ public class TileSpawner : NetworkBehaviour
         }
 
         timerScript.CmdStopCountdown();
+        playerCount.CmdAnnounce();
         isDestroyingTiles = false;
         isActivated = false; 
         tiles.Clear();
@@ -137,9 +140,10 @@ public class TileSpawner : NetworkBehaviour
     }
     public void SpawnTiles()
     {
-       // activate.SetTrigger("isActivate");
+        // activate.SetTrigger("isActivate");
+        startedGame = true;
         isActivated = true;
-        
+        playerCount.ClearNames();
         for (int row = 0; row < rowCount; row++)
             {
                 int breakableColumn = Random.Range(0, colCount);
@@ -170,7 +174,8 @@ public class TileSpawner : NetworkBehaviour
     {
         //reset.SetTrigger("reset");
         isActivated = false;
-    
+        startedGame = false;
+
         foreach (var tile in tiles)
         {
             if(tile != null)

@@ -10,8 +10,7 @@ public class PlayerNameChange : NetworkBehaviour
     [SyncVar(hook = nameof(OnDisplayNameChanged))]
     private string displayName = "DefaultName";
 
-  
-
+ 
     [SyncVar]
     public bool isRenaming = false;
 
@@ -21,9 +20,8 @@ public class PlayerNameChange : NetworkBehaviour
     [SerializeField]
     private Text playerDisplayName;
 
-    [Header("Gamer Tag Canvas Text")]
-    [SerializeField] 
-    private Text gamertag;
+    [Header("Gamer Tag Canvas Text")] 
+    public Text gamertag;
 
     [Header("Player Name Input Field")]
     [SerializeField]
@@ -68,7 +66,7 @@ public class PlayerNameChange : NetworkBehaviour
         {
             Rename();
         }
-
+        
         string inputText = playernameIN.text.ToLower();
         foreach (string s in badWords)
         {
