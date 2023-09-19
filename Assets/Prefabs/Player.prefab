@@ -133,11 +133,26 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  playerCamera: {fileID: 0}
+  playerLife: 3
+  setplayerLife: 0
+  heartContainer: {fileID: 0}
+  heartContainerPreview: {fileID: 0}
+  heartPrefab: {fileID: 0}
   moveSpeed: 4
   jumpForce: 5
-  lookSensitivity: 2
-  cameraSmoothing: 2
+  maxVelocityChange: 10
   cameraTransform: {fileID: 0}
+  lookSensitivity: 2
+  smoothTime: 0.1
+  slideSpeed: 10
+  rangeDetect: 1
+  cooldownDuration: 1
+  gravity: -9.81
+  AllowAirControl: 1
+  pushableLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &2812863110132035309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,7 +232,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

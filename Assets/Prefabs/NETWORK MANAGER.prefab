@@ -547,7 +547,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3574,10 +3574,8 @@ MonoBehaviour:
   timeInterpolationGui: 0
   HostportNumber: {fileID: 2723696382174795265}
   HostipAddress: {fileID: 2723696381907311087}
-  HostPlayerName: {fileID: 8929946064488106055}
   ClientportNumber: {fileID: 6527168096694125433}
   ClientipAddress: {fileID: 9212227563916288369}
-  ClientPlayerName: {fileID: 8067406839137574061}
 --- !u!114 &3582008593873087601
 MonoBehaviour:
   m_ObjectHideFlags: 0
