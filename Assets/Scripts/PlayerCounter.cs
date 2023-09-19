@@ -63,11 +63,19 @@ public class PlayerCounter : NetworkBehaviour
     public void AnnounceWinners()
     {
         StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < playersInside.Count; i++)
+        if (playersInside.Count > 0)
         {
-            stringBuilder.Append((i + 1).ToString()).Append(". ").Append(playersInside[i]).Append("\n");
+            for (int i = 0; i < playersInside.Count; i++)
+            {
+                stringBuilder.Append((i + 1).ToString()).Append(". ").Append(playersInside[i]).Append("\n");
+            }
         }
+        else
+        {
+            stringBuilder.Append("NO ONE HAS SURVIVED!");
+        }
+        
+      
 
         playerText.text = stringBuilder.ToString();
 
