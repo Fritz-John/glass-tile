@@ -143,7 +143,7 @@ public class TileSpawner : NetworkBehaviour
         // activate.SetTrigger("isActivate");
         startedGame = true;
         isActivated = true;
-        playerCount.ClearNames();
+        playerCount.CmdClearNames();
         for (int row = 0; row < rowCount; row++)
             {
                 int breakableColumn = Random.Range(0, colCount);

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 570479505004055683}
   - component: {fileID: 6023019994484096179}
   - component: {fileID: 8450724250525504849}
-  - component: {fileID: 4715093536928022686}
+  - component: {fileID: 6524304901410784393}
   m_Layer: 2
   m_Name: Life
   m_TagString: Untagged
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4715093536928022686
+--- !u!114 &6524304901410784393
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

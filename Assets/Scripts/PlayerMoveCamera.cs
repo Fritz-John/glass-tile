@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class PlayerMoveCamera : NetworkBehaviour
 {
     public Camera playerCamera;
+    CustomNM manager;
 
     [Header("Player Health")]
     [SyncVar]
@@ -44,6 +45,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
 
+    [SerializeField] Button disconnectBtn;
+    
     private Rigidbody rb;
     private bool isCooldown = false;       
     private float cooldownTimer = 0.0f;
@@ -76,7 +79,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     PlayerNameChange playerNameChange;
     TimerScript timerScript;
 
- 
+    GameObject hearts;
 
     void Start()
     {
@@ -106,9 +109,11 @@ public class PlayerMoveCamera : NetworkBehaviour
                     t.SetPlayerCamera(playerCamera.transform);
                 }
             }
-           
+                
         }
+        manager = GameObject.Find("NETWORK MANAGER").GetComponent<CustomNM>();
 
+        disconnectBtn.onClick.AddListener(manager.Disconnect);
         CmdSetPlayerHealth(playerLife);
     }
 
@@ -193,14 +198,17 @@ public class PlayerMoveCamera : NetworkBehaviour
     public void CmdSetPlayerHealth(int newHealth)
     {  
         playerLife = newHealth;
-     
-        RpcSetPlayerLife(playerLife);
+
+
+        RpcSetPlayerLife(newHealth);
     }
     [ClientRpc]
     void RpcSetPlayerLife(int newHealth)
     {
+
         UpdateUI(newHealth);
     }
+
     void UpdateUI(int newHealth)
     {
         foreach (Transform child in heartContainer)
@@ -220,12 +228,28 @@ public class PlayerMoveCamera : NetworkBehaviour
             heart.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
         }
 
-        for (int i = 0; i < newHealth; i++)
+        if (isServer)
         {
-            GameObject hearts = Instantiate(heartPrefab, heartContainerPreview);
-            hearts.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
-            NetworkServer.Spawn(hearts);
+            for (int i = 0; i < newHealth; i++)
+            {
+                GameObject hearts = Instantiate(heartPrefab, heartContainerPreview);
+                hearts.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
+
+                
+                NetworkServer.Spawn(hearts);
+            }
         }
+        else
+        {
+
+            for (int i = 0; i < newHealth; i++)
+            {
+                GameObject hearts = Instantiate(heartPrefab, heartContainerPreview);
+                hearts.GetComponent<RectTransform>().anchoredPosition = new Vector2(i * 100, 0);
+            }
+        }
+
+
     }
 
  

@@ -11,10 +11,13 @@ public class PlayerCounter : NetworkBehaviour
     private List<string> playersInside = new List<string>();
     public Text playerText;
 
+    [SyncVar(hook = nameof(OnPlayerNameChanged))]
+    private string displayName = "DefaultName";
 
     void Start()
     {
-        playerText.text = string.Empty;
+        //displayName = "";
+        //playerText.text = string.Empty;
     }
 
     // Update is called once per frame
@@ -60,6 +63,12 @@ public class PlayerCounter : NetworkBehaviour
     {
         AnnounceWinners();
     }
+    private void OnPlayerNameChanged(string oldValue, string newValue)
+    {
+        displayName = newValue;
+        playerText.text = displayName;
+    }
+
     public void AnnounceWinners()
     {
         StringBuilder stringBuilder = new StringBuilder();
@@ -67,23 +76,33 @@ public class PlayerCounter : NetworkBehaviour
         {
             for (int i = 0; i < playersInside.Count; i++)
             {
-                stringBuilder.Append((i + 1).ToString()).Append(". ").Append(playersInside[i]).Append("\n");
+                displayName = stringBuilder.Append((i + 1).ToString()).Append(". ").Append(playersInside[i]).Append("\n").ToString();
             }
         }
         else
         {
-            stringBuilder.Append("NO ONE HAS SURVIVED!");
+            displayName = stringBuilder.Append("NO ONE HAS SURVIVED!").ToString();
         }
         
       
 
-        playerText.text = stringBuilder.ToString();
+        playerText.text = displayName;
 
+    }
+    [Command(requiresAuthority = false)]
+    public void CmdClearNames()
+    {
+        RpcClearNames();
+    }
+    void RpcClearNames()
+    {
+        ClearNames();
     }
     public void ClearNames()
     {
         playersInside.Clear();
-        playerText.text = "";
+        displayName = "";
+        playerText.text = displayName;
     }
     void RemoveName(string name)
     {
