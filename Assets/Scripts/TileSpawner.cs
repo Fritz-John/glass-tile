@@ -33,6 +33,8 @@ public class TileSpawner : NetworkBehaviour
     public TimerScript timerScript;
     public PlayerCounter playerCount;
     public bool startedGame = false;
+
+    public float explosionForce;
     private void Awake()
     {
         instance = this;
@@ -103,8 +105,8 @@ public class TileSpawner : NetworkBehaviour
         ExplodeForce(tilesBroken);
     }
     void ExplodeForce(GameObject tilesBroken)
-    {     
-        float explosionForce = 200f;
+    {
+      
         float explosionRadius = 5.0f;
         Vector3 explosionPosition = tilesBroken.transform.position;
 
