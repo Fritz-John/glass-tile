@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Telepathy;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 public class TileSpawner : NetworkBehaviour
 {
     public GameObject breakablePrefab;
     public GameObject nonBreakablePrefab;
+    public GameObject lightSphere;
+    public Transform spawnerLight;
+    public Transform spawnerLight2;
     public float spacing = 7f;
 
     public int rowCount = 10;
@@ -43,8 +47,9 @@ public class TileSpawner : NetworkBehaviour
     {
         if (isServer)
         {
-           // SpawnTiles();
+            SpawnLights();
         }
+      
     }
     private void Update()
     {
@@ -172,6 +177,20 @@ public class TileSpawner : NetworkBehaviour
         
     }
 
+    public void SpawnLights()
+    {
+      
+        for (int i = 0; i < 200; i++)
+        {
+            float zoffset = i * 0.5f;
+            Vector3 spawnPosition = spawnerLight.position + new Vector3(0, 0, zoffset);
+            GameObject gameObject = Instantiate(lightSphere, spawnPosition, spawnerLight.rotation);
+            Vector3 spawnPosition2 = spawnerLight2.position + new Vector3(0, 0, zoffset);
+            GameObject gameObject2 = Instantiate(lightSphere, spawnPosition2, spawnerLight2.rotation);
+            NetworkServer.Spawn(gameObject);
+        }
+       
+    }
     public void ResetTiles()
     {
         //reset.SetTrigger("reset");

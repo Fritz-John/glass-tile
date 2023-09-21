@@ -28,10 +28,49 @@ public class CustomNM : NetworkManager
 
     //[SerializeField] InputField ClientPlayerName;
 
-
+    [SerializeField] SceneChange sceneChange;
     kcp2k.KcpTransport netTrans;
 
     private bool isHost;
+    private static CustomNM instance;
+  
+    public static CustomNM Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<CustomNM>();
+                if (instance == null)
+                {
+                    GameObject obj = new GameObject("CustomNM");
+                    instance = obj.AddComponent<CustomNM>();
+                }
+            }
+            return instance;
+        }
+    }
+    public static void DestroyInstance()
+    {
+        if (instance != null)
+        {
+            Destroy(instance.gameObject);
+            instance = null;
+        }
+    }
+
+    private new void Awake()
+    {
+        if (instance != null && instance != this)
+        {       
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
 
     public override void Start()
     {
@@ -88,35 +127,26 @@ public class CustomNM : NetworkManager
     public void Disconnect()
     {
 
-        // Stop Host if local user is host
         if (NetworkServer.active && NetworkClient.isConnected)
         {
 
 
-            PlayerMoveCamera[] networkIdentity = FindObjectsOfType<PlayerMoveCamera>();
 
-            foreach (PlayerMoveCamera item in networkIdentity)
-            {
-                NetworkServer.Destroy(item.gameObject);
-            }
-            wholeHost.SetActive(false);
-            dummyLevel.SetActive(true);
-            mainLevel.SetActive(false);
-            wholeHostandClient.SetActive(true);
+            sceneChange.ChangeScene("UI");
             StopHost();
         }
 
-
-        
-
-        // Stop Client if local user is client
-        if (NetworkClient.isConnected)
+         if (NetworkClient.isConnected)
         {
+            sceneChange.ChangeScene("UI");
+            StopClient();
         }
 
         // Cancel Join
         if (NetworkClient.isConnecting)
         {
+
+            sceneChange.ChangeScene("UI");
             StopClient();
         }
 
@@ -176,6 +206,7 @@ public class CustomNM : NetworkManager
         StartClient();
       
     }
+   
     // Callback when the client successfully connects to the server
    
 

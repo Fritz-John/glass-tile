@@ -19,6 +19,10 @@ public class SceneChange : MonoBehaviour
 
     public void ChangeScene(string sceneName)
     {
+        if (sceneName == "UI")
+        {
+            CustomNM.DestroyInstance();
+        }
         SceneManager.LoadScene(sceneName);
     }
 }

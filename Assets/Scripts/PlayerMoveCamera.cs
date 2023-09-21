@@ -36,6 +36,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float slideSpeed = 10f;
     public float rangeDetect = 1f;
     public float cooldownDuration = 1.0f;
+    public Image cooldownImage;
 
     [Header("Custom Gravity")]
     public float gravity = -9.81f;
@@ -79,8 +80,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     PlayerNameChange playerNameChange;
     TimerScript timerScript;
 
-    GameObject hearts;
-
+  
+    public AudioListener audioListener;
     void Start()
     {
        
@@ -96,10 +97,11 @@ public class PlayerMoveCamera : NetworkBehaviour
         if (!isLocalPlayer)
         {
             cameraTransform.gameObject.SetActive(false);
-           
+            audioListener.enabled = false;
         }
         if (isLocalPlayer)
         {
+            audioListener.enabled = true;
             CmdAssignPlayerAuthority(GetComponent<NetworkIdentity>());
             TextFollowPlayer[] textFollower = FindObjectsOfType<TextFollowPlayer>();
             foreach (TextFollowPlayer t in textFollower)
@@ -111,9 +113,10 @@ public class PlayerMoveCamera : NetworkBehaviour
             }
                 
         }
-        manager = GameObject.Find("NETWORK MANAGER").GetComponent<CustomNM>();
 
+        manager = GameObject.Find("NETWORK MANAGER").GetComponent<CustomNM>();
         disconnectBtn.onClick.AddListener(manager.Disconnect);
+
         CmdSetPlayerHealth(playerLife);
     }
 
@@ -131,9 +134,7 @@ public class PlayerMoveCamera : NetworkBehaviour
         else
         {
             RespawnPoint();
-        }
-        
-        //BreakableObject();
+        }    
 
         float sphereCastRadius = 0.1f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
@@ -290,22 +291,6 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         }
     }
-    //private void BreakableObject()
-    //{
-    //    if (isGrounded)
-    //    {
-    //        if(hit.collider != null)
-    //        {
-    //            if (hit.collider.CompareTag("Breakable"))
-    //            {
-    //                CmdPlayBreakSound();
-    //                CmdDisableObject(hit.collider.gameObject);
-    //            }
-    //        }
-          
-    //    }
-
-    //}  
     private void PushableObject()
     {
         if (Physics.Raycast(cameraRay, out pushHit, rangeDetect, pushableLayer))
@@ -323,6 +308,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
                     isCooldown = true;
                     cooldownTimer = cooldownDuration;
+                   
                 }
 
             }
@@ -330,14 +316,16 @@ public class PlayerMoveCamera : NetworkBehaviour
         }
         if (isCooldown)
         {
+            
             cooldownTimer -= Time.deltaTime;
-
+           
 
             if (cooldownTimer <= 0)
             {
-
+                cooldownImage.fillAmount = 0;
                 isCooldown = false;
             }
+            cooldownImage.fillAmount = cooldownTimer / cooldownDuration;
         }
     }
 
@@ -506,6 +494,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     public void CmdSpawnTiles()
     {
         TileSpawner.instance.SpawnTiles();
+        //TileSpawner.instance.SpawnLights();
     }
 
     [Command]
