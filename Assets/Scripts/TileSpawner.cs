@@ -58,11 +58,13 @@ public class TileSpawner : NetworkBehaviour
         //    if (!isDestroyingTiles)
         //    {
         //        isDestroyingTiles = true;
-             
+
         //        StartCoroutine(DestroyTilesWithDelay());
         //    }
         //}
-       // Debug.Log(tiles.Count);
+        // Debug.Log(tiles.Count);
+
+        //Debug.Log(isDestroyingTiles);
     }
 
     public IEnumerator DestroyTilesWithDelay()
@@ -72,7 +74,7 @@ public class TileSpawner : NetworkBehaviour
 
         foreach (var tile in tilesCopy)
         {
-          
+            isDestroyingTiles = true;
             if (tile != null && tiles.Contains(tile))
             {
                 GameObject tilesBroken = Instantiate(tilesBrokenPrefab, tile.transform.position, tile.transform.rotation);
@@ -195,22 +197,24 @@ public class TileSpawner : NetworkBehaviour
     public void ResetTiles()
     {
         //reset.SetTrigger("reset");
-        isActivated = false;
-        startedGame = false;
-        playerCount.CmdClearNames();
-
         PlayerMoveCamera[] playerMoveCamera = FindObjectsOfType<PlayerMoveCamera>();
         foreach (PlayerMoveCamera player in playerMoveCamera)
         {
             player.CmdSetPlayerHealth(player.setplayerLife);
         }
+       
+        playerCount.CmdClearNames();
+        isActivated = false;
+        startedGame = false;
+      
+       
         foreach (var tile in tiles)
         {
             if(tile != null)
                 NetworkServer.Destroy(tile);
 
         }
-
+       
         tiles.Clear();
     }
     public void RemoveTile(GameObject tileToRemove)

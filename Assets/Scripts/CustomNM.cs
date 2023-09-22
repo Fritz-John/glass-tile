@@ -121,7 +121,7 @@ public class CustomNM : NetworkManager
     }
     public void Disconnect()
     {
-
+        Cursor.lockState = CursorLockMode.None;
         if (NetworkServer.active && NetworkClient.isConnected)
         {
             sceneChange.ChangeScene("UI");

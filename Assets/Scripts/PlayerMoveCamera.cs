@@ -80,7 +80,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     PlayerNameChange playerNameChange;
     TimerScript timerScript;
 
-  
+    private Vector3 predictedPushVelocity = Vector3.zero;
     public AudioListener audioListener;
     void Start()
     {
@@ -200,6 +200,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {  
         playerLife = newHealth;
 
+        
 
         RpcSetPlayerLife(newHealth);
     }
@@ -287,6 +288,7 @@ public class PlayerMoveCamera : NetworkBehaviour
                     SpawnNow();
                 }
             }
+         
           
 
         }
@@ -304,7 +306,12 @@ public class PlayerMoveCamera : NetworkBehaviour
                     Rigidbody rb = pushableObject.GetComponent<Rigidbody>();
 
                     if (rb != null)
-                        CmdPushPlayer(pushableObject);
+                    {
+                        Vector3 slidingDirection = transform.forward;
+                        predictedPushVelocity = slidingDirection * slideSpeed;
+                        CmdPushPlayer(pushableObject, predictedPushVelocity);
+                    }
+                      
 
                     isCooldown = true;
                     cooldownTimer = cooldownDuration;
@@ -455,30 +462,28 @@ public class PlayerMoveCamera : NetworkBehaviour
         cameraTransform.transform.localRotation = Quaternion.Euler(smoothXRotation, 0, 0);
       
     }
-    private void PushBackward(GameObject rb)
+    private void PushBackward(GameObject rb, Vector3 predictedPushVelocity)
     {
 
         Rigidbody rigidBody = rb.GetComponent<Rigidbody>();
 
-        Vector3 slidingDirection = transform.forward;
+        rigidBody.AddForce(predictedPushVelocity, ForceMode.VelocityChange);
 
-        Vector3 targetVelocity = slidingDirection * slideSpeed;
-
-        rigidBody.AddForce(targetVelocity, ForceMode.VelocityChange);
-
+     
+        
     }
 
     [Command(requiresAuthority = true)]
-    public void CmdPushPlayer(GameObject rb)
+    public void CmdPushPlayer(GameObject rb, Vector3 predictedPushVelocity)
     {
-        RpcPushPlayer(rb);
+        RpcPushPlayer(rb, predictedPushVelocity);
     }
 
     [ClientRpc]
-    private void RpcPushPlayer(GameObject rb)
+    private void RpcPushPlayer(GameObject rb, Vector3 predictedPushVelocity)
     {
 
-        PushBackward(rb);
+        PushBackward(rb, predictedPushVelocity);
     }
 
     [Command]
