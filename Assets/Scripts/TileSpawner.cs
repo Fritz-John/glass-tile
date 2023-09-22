@@ -197,7 +197,13 @@ public class TileSpawner : NetworkBehaviour
         //reset.SetTrigger("reset");
         isActivated = false;
         startedGame = false;
+        playerCount.CmdClearNames();
 
+        PlayerMoveCamera[] playerMoveCamera = FindObjectsOfType<PlayerMoveCamera>();
+        foreach (PlayerMoveCamera player in playerMoveCamera)
+        {
+            player.CmdSetPlayerHealth(player.setplayerLife);
+        }
         foreach (var tile in tiles)
         {
             if(tile != null)
