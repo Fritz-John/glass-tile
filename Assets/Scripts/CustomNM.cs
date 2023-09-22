@@ -30,7 +30,6 @@ public class CustomNM : NetworkManager
     //[SerializeField] InputField ClientPlayerName;
 
     [SerializeField] SceneChange sceneChange;
-    [SerializeField] ClientSceneChanger CsceneChange;
     kcp2k.KcpTransport netTrans;
 
     private static CustomNM instance;
