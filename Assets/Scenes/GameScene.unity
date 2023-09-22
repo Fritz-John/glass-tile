@@ -13754,6 +13754,7 @@ GameObject:
   - component: {fileID: 3254918671430062908}
   - component: {fileID: 3254918671430062909}
   - component: {fileID: 3254918671430062882}
+  - component: {fileID: 3254918671430062910}
   m_Layer: 0
   m_Name: NETWORK MANAGER
   m_TagString: Untagged
@@ -13837,8 +13838,19 @@ MonoBehaviour:
   wholeHostandClient: {fileID: 4130524279063236496}
   connectingText: {fileID: 1649905975}
   disconnectBtn: {fileID: 341025145}
-  sceneChange: {fileID: 0}
-  CsceneChange: {fileID: 0}
+  sceneChange: {fileID: 3254918671430062910}
+--- !u!114 &3254918671430062910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3254918671430062883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88f0005c367775c42b922c438063b9da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3290488333044631614 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4158547608654855334, guid: f5c905a4655c32340ab27db92de61df6, type: 3}
