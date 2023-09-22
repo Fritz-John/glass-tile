@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CustomNM : NetworkManager
 {
@@ -29,11 +30,11 @@ public class CustomNM : NetworkManager
     //[SerializeField] InputField ClientPlayerName;
 
     [SerializeField] SceneChange sceneChange;
+    [SerializeField] ClientSceneChanger CsceneChange;
     kcp2k.KcpTransport netTrans;
 
-    private bool isHost;
     private static CustomNM instance;
-  
+ 
     public static CustomNM Instance
     {
         get
@@ -81,11 +82,12 @@ public class CustomNM : NetworkManager
     private new void Update()
     {
 
-        if (!NetworkClient.isConnected)
+        if (!NetworkClient.isConnected )
         {
 
             connectingText.text = "Connecting to " + networkAddress;
             disconnectBtn.gameObject.SetActive(true);
+          
         }
         else
         {
@@ -93,8 +95,14 @@ public class CustomNM : NetworkManager
             disconnectBtn.gameObject.SetActive(false);
             connecting.SetActive(false);
         }
-
+        
     }
+    public override void OnStopHost()
+    {
+        base.OnStopHost();
+        Debug.LogWarning("Server has stopped!");
+    }
+    
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -103,25 +111,13 @@ public class CustomNM : NetworkManager
     {
         //disconnectBtn.onClick.AddListener(Disconnect);
     }
-    public void DisconnectClient()
-    {
-        Debug.Log("Disconnect is Called!");
-       
-            StopClient();
-        
-        connecting.SetActive(false);
-        wholeClient.SetActive(true);
-       
-    }
+    
     public void DisconnectHost()
     {
-        //Debug.Log("Disconnect is Called!");
         if (NetworkServer.active && NetworkClient.isConnected)
         {
             StopHost();
         }
-        //connecting.SetActive(false);
-       // wholeClient.SetActive(true);
 
     }
     public void Disconnect()
@@ -129,9 +125,6 @@ public class CustomNM : NetworkManager
 
         if (NetworkServer.active && NetworkClient.isConnected)
         {
-
-
-
             sceneChange.ChangeScene("UI");
             StopHost();
         }
@@ -161,11 +154,15 @@ public class CustomNM : NetworkManager
         usedColors.Add(newColor);
 
         colorChange.SetDisplayColor(newColor);
-        
-      
+
+
 
     }
-
+    public override void OnStopClient()
+    {
+        base.OnStopClient();
+        Disconnect();
+    }
     private Color GetUniqueRandomColor()
     {
         Color randomColor;
@@ -186,8 +183,7 @@ public class CustomNM : NetworkManager
         dummyLevel.SetActive(false);
         networkAddress = HostipAddress.text;
         netTrans.Port = ushort.Parse(HostportNumber.text);
-       
-      //StartServer();    
+        
         StartHost();
     }
 
@@ -202,12 +198,9 @@ public class CustomNM : NetworkManager
         networkAddress = ClientipAddress.text;
         netTrans.Port = ushort.Parse(ClientportNumber.text);
 
-        //StartServer();
         StartClient();
       
     }
-   
-    // Callback when the client successfully connects to the server
    
 
 

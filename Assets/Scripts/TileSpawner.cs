@@ -188,6 +188,7 @@ public class TileSpawner : NetworkBehaviour
             Vector3 spawnPosition2 = spawnerLight2.position + new Vector3(0, 0, zoffset);
             GameObject gameObject2 = Instantiate(lightSphere, spawnPosition2, spawnerLight2.rotation);
             NetworkServer.Spawn(gameObject);
+            NetworkServer.Spawn(gameObject2);
         }
        
     }

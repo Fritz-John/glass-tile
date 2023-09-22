@@ -1683,6 +1683,7 @@ GameObject:
   - component: {fileID: -7477235222542295363}
   - component: {fileID: 6622304217536365789}
   - component: {fileID: 2502475162568702981}
+  - component: {fileID: 9060531662379780802}
   m_Layer: 3
   m_Name: RealPlayer
   m_TagString: Player
@@ -1888,7 +1889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b81c453d012a8b48ae3e8530b28f983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   displayColor: {r: 0.5943396, g: 0.09812209, b: 0.09812209, a: 0}
@@ -1905,9 +1906,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e26fc3894cf69e4f9108e90dfd09c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
-  syncInterval: 0.02
+  syncInterval: 0
   playerCamera: {fileID: 5175070414252079541}
   playerLife: 3
   setplayerLife: 0
@@ -1943,7 +1944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ba3e37434ed1254ba2cd7b83f579473, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   isRenaming: 0
@@ -1952,6 +1953,21 @@ MonoBehaviour:
   playernameIN: {fileID: 7870038549142231358}
   InputCanvas: {fileID: 908136696891501005}
   wholeCanvas: {fileID: 4751617629232857898}
+--- !u!114 &9060531662379780802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5175070415671410828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d21d7dcbec80ef84d9484b7ef27fc0c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &5205451404518250921
 GameObject:
   m_ObjectHideFlags: 0
