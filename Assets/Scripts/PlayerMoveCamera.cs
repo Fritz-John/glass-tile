@@ -48,7 +48,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     [SerializeField] Button disconnectBtn;
     
-    private Rigidbody rb;
+    private Rigidbody playerRb;
     private bool isCooldown = false;       
     private float cooldownTimer = 0.0f;
     private Vector2 PlayerMouseInput;
@@ -82,10 +82,12 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     private Vector3 predictedPushVelocity = Vector3.zero;
     public AudioListener audioListener;
+
+    public bool stunned = false;
     void Start()
     {
-       
-        rb = GetComponent<Rigidbody>();
+
+        playerRb = GetComponent<Rigidbody>();
         setMovespeed = moveSpeed;
         timerScript = FindObjectOfType<TimerScript>();
 
@@ -144,10 +146,14 @@ public class PlayerMoveCamera : NetworkBehaviour
         {
             cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-  
-            MyInput();
-            PushableObject();
-            
+
+            if (!stunned)
+            {
+                MyInput();
+                Jump();
+            }
+          
+            PushableObject();        
             MovePlayerCamera();
             
             ActivatorReset();
@@ -171,7 +177,7 @@ public class PlayerMoveCamera : NetworkBehaviour
           
             //Debug.Log(playerLife);
         }
-      
+  
     }
 
     private void FixedUpdate()
@@ -254,7 +260,6 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     }
 
- 
     private void ActivatorReset()
     {   
         if (Physics.Raycast(cameraRay, out cameraHit, 1.5f))
@@ -346,7 +351,8 @@ public class PlayerMoveCamera : NetworkBehaviour
         while (usedSpawnPoints.Contains(random));
         usedSpawnPoints.Add(random);
         transform.position = respawnPoint[random].transform.position;
-        rb.velocity = Vector3.zero;
+        playerRb.velocity = Vector3.zero;
+        stunned = false;
     }
    
     private void RespawnPoint()
@@ -362,7 +368,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             yDistance = Mathf.Abs(transform.position.y - respawnPoint[i].transform.position.y);
         }
 
-        if (yDistance >= 10)
+        if (yDistance >= 15)
         {
             SpawnNow();
             PlayerHit();
@@ -371,7 +377,6 @@ public class PlayerMoveCamera : NetworkBehaviour
     }
     private void DeathRespawnPoint()
     {
- 
         for (int i = 0; i < deathRespawnPoint.Length; i++)
         {
             yDistanceDeath = Mathf.Abs(transform.position.y - deathRespawnPoint[i].transform.position.y);
@@ -388,7 +393,9 @@ public class PlayerMoveCamera : NetworkBehaviour
             {
                 PlayerHit();
             }
-            rb.velocity = Vector3.zero;
+
+            stunned = false;
+            playerRb.velocity = Vector3.zero;
         }
     }
     private void MyInput()
@@ -396,16 +403,11 @@ public class PlayerMoveCamera : NetworkBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
-       
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
-        {
-            Jump();
-        }
+
     }
     private void Move()
-    {
-      
-       if(isGrounded || AllowAirControl &&   !playerNameChange.isRenaming)
+    {   
+       if(isGrounded || AllowAirControl && !playerNameChange.isRenaming)
         {
             Vector3 cameraForward = cameraTransform.forward;
 
@@ -417,13 +419,13 @@ public class PlayerMoveCamera : NetworkBehaviour
             Vector3 targetVelocity = (cameraForward * verticalInput + cameraTransform.right * horizontalInput) * setMovespeed;
 
 
-            Vector3 velocity = rb.velocity;
+            Vector3 velocity = playerRb.velocity;
             Vector3 velocityChange = (targetVelocity - velocity);
             velocityChange.x = Mathf.Clamp(velocityChange.x, -maxVelocityChange, maxVelocityChange);
             velocityChange.z = Mathf.Clamp(velocityChange.z, -maxVelocityChange, maxVelocityChange);
             velocityChange.y = 0;
 
-            rb.AddForce(velocityChange, ForceMode.VelocityChange);
+            playerRb.AddForce(velocityChange, ForceMode.VelocityChange);
         }
        
 
@@ -438,18 +440,18 @@ public class PlayerMoveCamera : NetworkBehaviour
 
 
 
-        rb.AddForce(new Vector3(0, -gravity * rb.mass, 0));
+        playerRb.AddForce(new Vector3(0, -gravity * playerRb.mass, 0));
 
     }
-
     private void Jump()
     {
-        if (isGrounded && Input.GetButtonDown("Jump"))
+
+     
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !hit.collider.CompareTag("Breakable"))
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
-
     void MovePlayerCamera()
     {
         xRot -= PlayerMouseInput.y * lookSensitivity;
@@ -469,8 +471,7 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         rigidBody.AddForce(predictedPushVelocity, ForceMode.VelocityChange);
 
-     
-        
+   
     }
 
     [Command(requiresAuthority = true)]

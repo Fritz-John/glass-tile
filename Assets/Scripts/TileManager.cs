@@ -35,12 +35,14 @@ public class TileManager : NetworkBehaviour
     {
 
     }
-
-    private void OnTriggerEnter(Collider other)
+   
+    private void OnCollisionEnter(Collision other)
     {
         GameObject player = other.gameObject;
-        if (other.CompareTag("Player"))
+        if (player.CompareTag("Player"))
         {
+            PlayerMoveCamera playerMoveCamera = player.GetComponent<PlayerMoveCamera>();
+            playerMoveCamera.stunned = true; 
             CmdDisableObject(gameObject);
 
 
@@ -48,6 +50,18 @@ public class TileManager : NetworkBehaviour
 
         }
     }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    GameObject player = other.gameObject;
+    //    if (other.CompareTag("Player"))
+    //    {
+    //        CmdDisableObject(gameObject);
+
+
+    //        //CmdDestroy(gameObject);
+
+    //    }
+    //}
 
     [ClientRpc]
     public void RpcPlaySounds()

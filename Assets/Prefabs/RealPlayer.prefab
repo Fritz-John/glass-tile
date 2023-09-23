@@ -1998,7 +1998,7 @@ MonoBehaviour:
   heartContainerPreview: {fileID: 5434329082014287562}
   heartPrefab: {fileID: 8947044197731279190, guid: a1221c6706ab3414db6eb27a4456de4c, type: 3}
   moveSpeed: 5
-  jumpForce: 65
+  jumpForce: 75
   maxVelocityChange: 2
   cameraTransform: {fileID: 5175070414252079543}
   lookSensitivity: 2
@@ -2007,13 +2007,14 @@ MonoBehaviour:
   rangeDetect: 1
   cooldownDuration: 2
   cooldownImage: {fileID: 1438830583167796464}
-  gravity: 9.81
+  gravity: 13
   AllowAirControl: 1
   pushableLayer:
     serializedVersion: 2
     m_Bits: 8
   disconnectBtn: {fileID: 1533236424377008450}
   audioListener: {fileID: 5175070414252079540}
+  stunned: 0
 --- !u!114 &2502475162568702981
 MonoBehaviour:
   m_ObjectHideFlags: 0
