@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using System.Collections.Generic;
 
 public class TimerScript : NetworkBehaviour
 {
@@ -10,9 +11,12 @@ public class TimerScript : NetworkBehaviour
     public float setTimer = 600.0f;
     [SyncVar] private bool isCountingDown = false;
 
+    PlayerMoveCamera[] moveCamera;
+
     TileSpawner tileSpawner;
     private void Start()
     {
+     
         if (isServer)
         {
             timer = setTimer;
@@ -24,10 +28,23 @@ public class TimerScript : NetworkBehaviour
         if (!isServer)
             return;
 
+        moveCamera = FindObjectsOfType<PlayerMoveCamera>();
+    
+        bool anyPlayerHasHeartsLeft = false;
+
+        foreach (PlayerMoveCamera player in moveCamera)
+        {
+            if (player.playerLife > 0)
+            {          
+                anyPlayerHasHeartsLeft = true;
+                break;
+            }
+        }
+
         if (timer > 0 && isCountingDown)
         {
             timer -= Time.deltaTime;
-            if (timer < 0)
+            if (timer <= 0)
             {
                 timer = 0;
                 isCountingDown = false;
@@ -37,11 +54,21 @@ public class TimerScript : NetworkBehaviour
                     StartCoroutine(tileSpawner.DestroyTilesWithDelay());
                 }
             }
+             if (!anyPlayerHasHeartsLeft)
+                {
+                    timer = 0;
+                    isCountingDown = false;
+                    if (!tileSpawner.isDestroyingTiles)
+                    {
+                        tileSpawner.isDestroyingTiles = true;
+                        StartCoroutine(tileSpawner.DestroyTilesWithDelay());
+                    }
+                }                
         }
-       
-
+     
         UpdateTimerDisplay();
     }
+
     [Command(requiresAuthority = false)]
     public void CmdStartCountdown()
     {

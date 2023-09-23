@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class CustomNM : NetworkManager
 {
     private List<Color> usedColors = new List<Color>();
- 
+
     [SerializeField] InputField HostportNumber;
     [SerializeField] InputField HostipAddress;
     //[SerializeField] InputField HostPlayerName;
@@ -94,7 +94,7 @@ public class CustomNM : NetworkManager
             disconnectBtn.gameObject.SetActive(false);
             connecting.SetActive(false);
         }
-        
+        //Debug.Log("There are " + player.Count + " on the server");
     }
     public override void OnStopHost()
     {
@@ -147,15 +147,23 @@ public class CustomNM : NetworkManager
     {
         base.OnServerAddPlayer(conn);
 
+      
+
         ColorChange colorChange = conn.identity.GetComponent<ColorChange>();
 
+       
         Color newColor = GetUniqueRandomColor();
         usedColors.Add(newColor);
 
         colorChange.SetDisplayColor(newColor);
 
+        
 
+    }
 
+    public override void OnClientDisconnect()
+    {
+        base.OnClientDisconnect();
     }
     public override void OnStopClient()
     {
