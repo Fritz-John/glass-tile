@@ -50,6 +50,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     [Tooltip("AUDIO > Sfx should be added here to make the Sfx work")]
     [SerializeField] private MMF_Player jumpSFX;
     [SerializeField] private MMF_Player landSFX;
+    [SerializeField] private MMF_Player pushSFX;
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
@@ -135,6 +136,8 @@ public class PlayerMoveCamera : NetworkBehaviour
         jumpSFX.Initialization();
         landSFX = GameObject.Find("Landing SFX").GetComponent<MMF_Player>();
         landSFX.Initialization();
+        pushSFX = GameObject.Find("Push SFX").GetComponent<MMF_Player>();
+        pushSFX.Initialization();
     }
 
     void Update()
@@ -323,6 +326,7 @@ public class PlayerMoveCamera : NetworkBehaviour
             {
                 if (!isCooldown)
                 {
+                    pushSFX.PlayFeedbacks();
                     Rigidbody rb = pushableObject.GetComponent<Rigidbody>();
 
                     if (rb != null)
