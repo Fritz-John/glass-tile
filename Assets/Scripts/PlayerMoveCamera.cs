@@ -4,6 +4,10 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
 
+// gives access to MoreMountain's Scripts
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
+
 public class PlayerMoveCamera : NetworkBehaviour
 {
     public Camera playerCamera;
@@ -42,6 +46,10 @@ public class PlayerMoveCamera : NetworkBehaviour
     public float gravity = -9.81f;
     public bool AllowAirControl = true;
 
+    [Header("Feedbacks Player")]
+    [Tooltip("AUDIO > Sfx should be added here to make the Sfx work")]
+    [SerializeField] private MMF_Player jumpSFX;
+    [SerializeField] private MMF_Player landSFX;
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
@@ -120,6 +128,12 @@ public class PlayerMoveCamera : NetworkBehaviour
         disconnectBtn.onClick.AddListener(manager.Disconnect);
 
         CmdSetPlayerHealth(playerLife);
+        
+        // To initialize the Sfx
+        jumpSFX = GameObject.Find("Jump SFX").GetComponent<MMF_Player>();
+        jumpSFX.Initialization();
+        landSFX = GameObject.Find("Landing SFX").GetComponent<MMF_Player>();
+        landSFX.Initialization();
     }
 
     void Update()
@@ -449,8 +463,13 @@ public class PlayerMoveCamera : NetworkBehaviour
      
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !hit.collider.CompareTag("Breakable"))
         {
+            jumpSFX.PlayFeedbacks();
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            /*  Di ko alam kung saan toh dapat... Basta ito yung code para mag play yung landing sound
+             *  landSFX.PlayFeedbacks();
+             */
         }
+        
     }
     void MovePlayerCamera()
     {
