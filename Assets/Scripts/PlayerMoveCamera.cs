@@ -92,6 +92,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     public AudioListener audioListener;
 
     public bool stunned = false;
+    private bool hasLanded = false;
     void Start()
     {
 
@@ -458,9 +459,20 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     }
     private void Jump()
-    {
+    {  
+        if (isGrounded && !hit.collider.CompareTag("Breakable"))
+        {
+            if (!hasLanded)
+            {           
+                landSFX.PlayFeedbacks();
+                hasLanded = true;
+            }
+        }
+        else
+        {
+            hasLanded = false;
+        }
 
-     
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !hit.collider.CompareTag("Breakable"))
         {
             jumpSFX.PlayFeedbacks();
