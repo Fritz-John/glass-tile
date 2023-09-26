@@ -21,19 +21,28 @@ public class TileManager : NetworkBehaviour
 
     public AudioSource breakGlass;
     public AudioClip breakglassClip;
+    public AudioClip breakglassClipShort;
+    private AudioClip breakingGlassHolder;
 
     public float delay;
 
-
+    private TimerScript timerScript;
     void Start()
     {
-
+        timerScript = FindObjectOfType<TimerScript>();
     }
 
   
     void Update()
     {
-
+        if(timerScript.timer == 0)
+        {
+            breakingGlassHolder = breakglassClipShort;
+        }
+        else
+        {
+            breakingGlassHolder = breakglassClip;
+        }
     }
    
     private void OnCollisionEnter(Collision other)
@@ -66,7 +75,7 @@ public class TileManager : NetworkBehaviour
     [ClientRpc]
     public void RpcPlaySounds()
     {
-        breakGlass.clip = breakglassClip;
+        breakGlass.clip = breakingGlassHolder;
         breakGlass.Play();
 
     }
