@@ -51,6 +51,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     [SerializeField] private MMF_Player jumpSFX;
     [SerializeField] private MMF_Player landSFX;
     [SerializeField] private MMF_Player pushSFX;
+    [SerializeField] private MMF_Player deathSFX;
 
     [Header("Layer")]
     [SerializeField] LayerMask pushableLayer;
@@ -138,6 +139,8 @@ public class PlayerMoveCamera : NetworkBehaviour
         landSFX.Initialization();
         pushSFX = GameObject.Find("Push SFX").GetComponent<MMF_Player>();
         pushSFX.Initialization();
+        deathSFX = GameObject.Find("Player Death SFX").GetComponent<MMF_Player>();
+        deathSFX.Initialization();
     }
 
     void Update()
@@ -214,6 +217,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {
         if (playerLife > 0 && TileSpawner.instance.isActivated)
         {
+            deathSFX.PlayFeedbacks();
             playerLife--;
             CmdSetPlayerHealth(playerLife);
         }
