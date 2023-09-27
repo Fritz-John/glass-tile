@@ -8,11 +8,7 @@ using UnityEngine;
 
 public class TileManager : NetworkBehaviour
 {
-    
-    //public static PlaySoun instance;
-    public GameObject breakaBle;
-
-
+   
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
@@ -20,12 +16,11 @@ public class TileManager : NetworkBehaviour
 
     private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
 
+    [Header("SFX for DestroyTiles")]
     public AudioSource breakGlass;
     public AudioClip breakglassClip;
     public AudioClip breakglassClipShort;
     private AudioClip breakingGlassHolder;
-
-    public float delay;
 
     private TimerScript timerScript;
     void Start()
@@ -57,7 +52,7 @@ public class TileManager : NetworkBehaviour
             CmdDisableObject(gameObject);
 
             StartCoroutine(RotatePlayer(player));
-            //CmdDestroy(gameObject);
+            
         }
     }
     private IEnumerator RotatePlayer(GameObject player)
@@ -76,6 +71,7 @@ public class TileManager : NetworkBehaviour
 
         player.transform.rotation = targetRotation; 
     }
+
     //private void OnTriggerEnter(Collider other)
     //{
     //    GameObject player = other.gameObject;
@@ -102,7 +98,6 @@ public class TileManager : NetworkBehaviour
         
         RpcPlaySounds();
     }
-
 
     private IEnumerator DestroyObjectWithDelay(GameObject objectToDestroy)
     {
@@ -149,6 +144,7 @@ public class TileManager : NetworkBehaviour
             NetworkServer.Destroy(objectToDestroy);
         }
     }
+
     //[ClientRpc]
     //public void RpcPlaySounds()
     //{

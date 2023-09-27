@@ -7,15 +7,30 @@ using static UnityEngine.Rendering.DebugUI.Table;
 
 public class TileSpawner : NetworkBehaviour
 {
+    [Header("Gameobjects Prefabs")]
     public GameObject breakablePrefab;
-    public GameObject nonBreakablePrefab;
     public GameObject lightSphere;
-    public Transform spawnerLight;
-    public Transform spawnerLight2;
-    public float spacing = 7f;
 
+    [Header("Spacing of Tiles")]
+    public float spacing = 7f;
     public int rowCount = 10;
     public int colCount = 2;
+
+    [Header("Lights On Bridge")]
+    public Transform spawnerLight;
+    public Transform spawnerLight2;
+
+    [Header("Destroyed Tiles")]
+    public float DestroyTilesSpeed = 1.0f;
+    public GameObject tilesBrokenPrefab;
+
+    [Header("Explode of glass breaking")]
+    public float minexplosionForce;
+    public float maxexplosionForce;
+
+    [Header("Reference Scripts")]
+    public TimerScript timerScript;
+    public PlayerCounter playerCount;
 
     public static TileSpawner instance;
 
@@ -28,17 +43,12 @@ public class TileSpawner : NetworkBehaviour
 
     List<GameObject> tiles = new List<GameObject>();
     
-    public TimerScript timer;
     public bool isDestroyingTiles = false;
- 
-    public float destroyTimer = 1.0f;
-    public GameObject tilesBrokenPrefab;
 
-    public TimerScript timerScript;
-    public PlayerCounter playerCount;
+
     public bool startedGame = false;
 
-    public float explosionForce;
+ 
     private void Awake()
     {
         instance = this;
@@ -85,7 +95,7 @@ public class TileSpawner : NetworkBehaviour
                     RpcexplodeTiles(tilesBroken,tile);
                     StartCoroutine(DestroyBreakableTileWithDelay(tilesBroken, tile));
               
-                    yield return new WaitForSeconds(destroyTimer);
+                    yield return new WaitForSeconds(DestroyTilesSpeed);
         
                     tiles.Remove(tile);
                 }
@@ -116,6 +126,7 @@ public class TileSpawner : NetworkBehaviour
       
         float explosionRadius = 5.0f;
         Vector3 explosionPosition = tilesBroken.transform.position;
+        float rand = Random.Range(minexplosionForce, maxexplosionForce);
 
         foreach (Transform child in tilesBroken.transform)
         {
@@ -123,7 +134,8 @@ public class TileSpawner : NetworkBehaviour
             Rigidbody rb = child.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius);
+                Debug.Log(rand);
+                rb.AddExplosionForce(rand, explosionPosition, explosionRadius);
                 //AudioSource sourceAudio = originalTile.GetComponent<AudioSource>();
 
                 TileManager tileManager = originalTile.GetComponent<TileManager>();
@@ -222,7 +234,6 @@ public class TileSpawner : NetworkBehaviour
         {
             if(tile != null)
                 NetworkServer.Destroy(tile);
-
         }
        
         tiles.Clear();
