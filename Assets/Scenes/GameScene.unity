@@ -8981,7 +8981,8 @@ MonoBehaviour:
   spawnerLight2: {fileID: 2122650284}
   DestroyTilesSpeed: 0.1
   tilesBrokenPrefab: {fileID: 5136648797624544567, guid: e4b456df66493cc4ebf635ff265b3f6f, type: 3}
-  explosionForce: 1000
+  minexplosionForce: 500
+  maxexplosionForce: 1000
   timerScript: {fileID: 558387614}
   playerCount: {fileID: 1488387434}
   isActivated: 0
