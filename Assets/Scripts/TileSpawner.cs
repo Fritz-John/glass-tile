@@ -156,33 +156,39 @@ public class TileSpawner : NetworkBehaviour
         isActivated = true;
         playerCount.CmdClearNames();
         for (int row = 0; row < rowCount; row++)
+        {
+            int breakableColumn = Random.Range(0, colCount);
+
+            for (int col = 0; col < colCount; col++)
             {
-                int breakableColumn = Random.Range(0, colCount);
+                Vector3 spawnPosition = transform.position + new Vector3(col * spacing, 0, row * spacing);
 
-                for (int col = 0; col < colCount; col++)
+                if (col == breakableColumn)
                 {
-                    Vector3 spawnPosition = transform.position + new Vector3(col * spacing, 0, row * spacing);
-
-                    if (col == breakableColumn)
-                    {
-                        tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
-                        tile.tag = "Breakable";
-                        NetworkServer.Spawn(tile);
-                       
-                    }
-                    else
-                    {
-                        tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
-                        tile.tag = "Untagged";
-                        NetworkServer.Spawn(tile);
-                        
-                    }
+                    tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
+                    tile.tag = "Breakable";
+                   
+                    NetworkServer.Spawn(tile);
+                    RpcSetTag(tile, "Breakable");
+                }
+                else
+                {
+                    tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
+                    tile.tag = "Untagged";
+                   
+                    NetworkServer.Spawn(tile);
+                    RpcSetTag(tile, "Untagged");
+                }
                 tiles.Add(tile);
             }
-            }
-        
-    }
+        }
 
+    }
+    [ClientRpc]
+    void RpcSetTag(GameObject obj, string newTag)
+    {
+        obj.tag = newTag;
+    }
     public void SpawnLights()
     {
       
