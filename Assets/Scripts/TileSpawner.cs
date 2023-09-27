@@ -134,7 +134,7 @@ public class TileSpawner : NetworkBehaviour
             Rigidbody rb = child.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                Debug.Log(rand);
+                //Debug.Log(rand);
                 rb.AddExplosionForce(rand, explosionPosition, explosionRadius);
                 //AudioSource sourceAudio = originalTile.GetComponent<AudioSource>();
 
