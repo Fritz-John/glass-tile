@@ -2,26 +2,13 @@ using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
-// To access MoreMountains' Scripts
-using MoreMountains.Tools;
-using MoreMountains.Feedbacks;
-
 public class TileManager : NetworkBehaviour
 {
-    
-    //public static PlaySoun instance;
-    public GameObject breakaBle;
-
-    [Header("Gun SFX")]
-    [Tooltip("AUDIO > Sfx should be added here to make the Sfx work")]
-    private MMF_Player gunRifleSfx;
-    
-    // Use this to play the gun sfx
-    // gunRifleSfx.PlayFeedbacks();
-    
+   
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
@@ -29,20 +16,16 @@ public class TileManager : NetworkBehaviour
 
     private Dictionary<GameObject, bool> disabledObjects = new Dictionary<GameObject, bool>();
 
+    [Header("SFX for DestroyTiles")]
     public AudioSource breakGlass;
     public AudioClip breakglassClip;
     public AudioClip breakglassClipShort;
     private AudioClip breakingGlassHolder;
 
-    public float delay;
-
     private TimerScript timerScript;
     void Start()
     {
         timerScript = FindObjectOfType<TimerScript>();
-        
-        gunRifleSfx = GameObject.Find("Gun Rifle SFX").GetComponent<MMF_Player>();
-        gunRifleSfx.Initialization();
     }
 
   
@@ -64,14 +47,31 @@ public class TileManager : NetworkBehaviour
         if (player.CompareTag("Player") && this.tag == "Breakable")
         {
             PlayerMoveCamera playerMoveCamera = player.GetComponent<PlayerMoveCamera>();
-            playerMoveCamera.stunned = true; 
+            playerMoveCamera.stunned = true;
+           
             CmdDisableObject(gameObject);
 
-
-            //CmdDestroy(gameObject);
-
+            StartCoroutine(RotatePlayer(player));
+            
         }
     }
+    private IEnumerator RotatePlayer(GameObject player)
+    {
+        Quaternion startRotation = player.transform.rotation;
+        Quaternion targetRotation = Quaternion.Euler(-90f, 0f, 0f);
+        float duration = 0.6f;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            player.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        player.transform.rotation = targetRotation; 
+    }
+
     //private void OnTriggerEnter(Collider other)
     //{
     //    GameObject player = other.gameObject;
@@ -98,7 +98,6 @@ public class TileManager : NetworkBehaviour
         
         RpcPlaySounds();
     }
-
 
     private IEnumerator DestroyObjectWithDelay(GameObject objectToDestroy)
     {
@@ -145,6 +144,7 @@ public class TileManager : NetworkBehaviour
             NetworkServer.Destroy(objectToDestroy);
         }
     }
+
     //[ClientRpc]
     //public void RpcPlaySounds()
     //{

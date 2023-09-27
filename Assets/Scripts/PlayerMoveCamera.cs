@@ -95,9 +95,11 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     public bool stunned = false;
     private bool hasLanded = false;
+
+    Quaternion originalRotation;
     void Start()
     {
-
+        originalRotation = gameObject.transform.rotation;
         playerRb = GetComponent<Rigidbody>();
         setMovespeed = moveSpeed;
         timerScript = FindObjectOfType<TimerScript>();
@@ -149,15 +151,16 @@ public class PlayerMoveCamera : NetworkBehaviour
         {     
             return;
         }
+        RespawnPoint();
 
-        if (playerLife <= 1)
-        {
-            DeathRespawnPoint();
-        }
-        else
-        {
-            RespawnPoint();
-        }    
+        //if (playerLife <= 1)
+        //{
+        //    //DeathRespawnPoint();
+        //}
+        //else
+        //{
+           
+        //}    
 
         float sphereCastRadius = 0.1f;
         isGrounded = Physics.SphereCast(transform.position, sphereCastRadius, Vector3.down, out hit, 0.9f);
@@ -371,18 +374,46 @@ public class PlayerMoveCamera : NetworkBehaviour
 
     private void SpawnNow()
     {
-        int random;
-        do
+        if (playerLife > 1)
         {
-            random = Random.Range(0, respawnPoint.Length);
+            int random;
+            do
+            {
+                random = Random.Range(0, respawnPoint.Length);
+            }
+            while (usedSpawnPoints.Contains(random));
+            usedSpawnPoints.Add(random);
+            transform.position = respawnPoint[random].transform.position;
+            playerRb.velocity = Vector3.zero;
+            stunned = false;
+           
         }
-        while (usedSpawnPoints.Contains(random));
-        usedSpawnPoints.Add(random);
-        transform.position = respawnPoint[random].transform.position;
-        playerRb.velocity = Vector3.zero;
-        stunned = false;
-    }
-   
+        else
+        {
+            for (int i = 0; i < deathRespawnPoint.Length; i++)
+            {
+                yDistanceDeath = Mathf.Abs(transform.position.y - deathRespawnPoint[i].transform.position.y);
+            }
+
+            if (yDistanceDeath >= 10)
+            {
+                int random;
+
+                random = Random.Range(0, deathRespawnPoint.Length);
+
+                transform.position = deathRespawnPoint[random].transform.position;
+                if (playerLife > 0)
+                {
+                    PlayerHit();
+                }
+
+                stunned = false;
+                playerRb.velocity = Vector3.zero;
+                
+            }
+        }
+        gameObject.transform.rotation = originalRotation;
+    }  
     private void RespawnPoint()
     {
         if (usedSpawnPoints.Count == respawnPoint.Length)
@@ -403,29 +434,7 @@ public class PlayerMoveCamera : NetworkBehaviour
          
         }
     }
-    private void DeathRespawnPoint()
-    {
-        for (int i = 0; i < deathRespawnPoint.Length; i++)
-        {
-            yDistanceDeath = Mathf.Abs(transform.position.y - deathRespawnPoint[i].transform.position.y);
-        }
-
-        if (yDistanceDeath >= 10)
-        {
-            int random;
-
-            random = Random.Range(0, deathRespawnPoint.Length);
-
-            transform.position = deathRespawnPoint[random].transform.position;     
-            if (playerLife > 0)
-            {
-                PlayerHit();
-            }
-
-            stunned = false;
-            playerRb.velocity = Vector3.zero;
-        }
-    }
+    
     private void MyInput()
     {
         horizontalInput = Input.GetAxis("Horizontal");
