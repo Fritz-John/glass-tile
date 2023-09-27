@@ -6,6 +6,10 @@ using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// To access MoreMountains' Scripts
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
+
 public class TileManager : NetworkBehaviour
 {
    
@@ -23,9 +27,21 @@ public class TileManager : NetworkBehaviour
     private AudioClip breakingGlassHolder;
 
     private TimerScript timerScript;
+    
+    [Header("Gun SFX")]
+    [Tooltip("AUDIO > Sfx should be added here to make the Sfx work")]
+    private MMF_Player gunRifleSfx;
+    
+    // Use this to play the gun sfx
+    // gunRifleSfx.PlayFeedbacks();
+    
     void Start()
     {
         timerScript = FindObjectOfType<TimerScript>();
+        
+                
+        gunRifleSfx = GameObject.Find("Gun Rifle SFX").GetComponent<MMF_Player>();
+        gunRifleSfx.Initialization();
     }
 
   
