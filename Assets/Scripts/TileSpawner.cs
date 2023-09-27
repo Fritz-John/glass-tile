@@ -109,9 +109,9 @@ public class TileSpawner : NetworkBehaviour
     {
         originalTile.GetComponent<BoxCollider>().enabled = false;
         originalTile.GetComponent<MeshRenderer>().enabled = false;
-        ExplodeForce(tilesBroken);
+        ExplodeForce(tilesBroken, originalTile);
     }
-    void ExplodeForce(GameObject tilesBroken)
+    void ExplodeForce(GameObject tilesBroken, GameObject originalTile)
     {
       
         float explosionRadius = 5.0f;
@@ -124,7 +124,9 @@ public class TileSpawner : NetworkBehaviour
             if (rb != null)
             {
                 rb.AddExplosionForce(explosionForce, explosionPosition, explosionRadius);
-                TileManager tileManager = FindObjectOfType<TileManager>();
+                //AudioSource sourceAudio = originalTile.GetComponent<AudioSource>();
+
+                TileManager tileManager = originalTile.GetComponent<TileManager>();
                 if (tileManager != null)
                 {
 
@@ -164,12 +166,14 @@ public class TileSpawner : NetworkBehaviour
                     if (col == breakableColumn)
                     {
                         tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
+                        tile.tag = "Breakable";
                         NetworkServer.Spawn(tile);
                        
                     }
                     else
                     {
-                        tile = Instantiate(nonBreakablePrefab, spawnPosition, Quaternion.identity);
+                        tile = Instantiate(breakablePrefab, spawnPosition, Quaternion.identity);
+                        tile.tag = "Untagged";
                         NetworkServer.Spawn(tile);
                         
                     }

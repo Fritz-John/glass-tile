@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 245138557194442996}
   - component: {fileID: 3032628001383910572}
   - component: {fileID: -608867623229467240}
-  m_Layer: 2
-  m_Name: Breakable
-  m_TagString: Breakable
+  m_Layer: 0
+  m_Name: GlassTiles
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

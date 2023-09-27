@@ -172,6 +172,11 @@ public class PlayerMoveCamera : NetworkBehaviour
             {
                 MyInput();
                 Jump();
+               
+            }
+            else
+            {
+                setMovespeed = 0;
             }
           
             PushableObject();        

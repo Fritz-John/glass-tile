@@ -48,7 +48,7 @@ public class TileManager : NetworkBehaviour
     private void OnCollisionEnter(Collision other)
     {
         GameObject player = other.gameObject;
-        if (player.CompareTag("Player"))
+        if (player.CompareTag("Player") && this.tag == "Breakable")
         {
             PlayerMoveCamera playerMoveCamera = player.GetComponent<PlayerMoveCamera>();
             playerMoveCamera.stunned = true; 
