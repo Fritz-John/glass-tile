@@ -5,13 +5,23 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// To access MoreMountains' Scripts
+using MoreMountains.Tools;
+using MoreMountains.Feedbacks;
+
 public class TileManager : NetworkBehaviour
 {
     
     //public static PlaySoun instance;
     public GameObject breakaBle;
 
-
+    [Header("Gun SFX")]
+    [Tooltip("AUDIO > Sfx should be added here to make the Sfx work")]
+    private MMF_Player gunRifleSfx;
+    
+    // Use this to play the gun sfx
+    // gunRifleSfx.PlayFeedbacks();
+    
     [Header("Prefab Breaked Tiles")]
     public GameObject breakableTiles;
 
@@ -30,6 +40,9 @@ public class TileManager : NetworkBehaviour
     void Start()
     {
         timerScript = FindObjectOfType<TimerScript>();
+        
+        gunRifleSfx = GameObject.Find("Gun Rifle SFX").GetComponent<MMF_Player>();
+        gunRifleSfx.Initialization();
     }
 
   
