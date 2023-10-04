@@ -33,7 +33,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     public Transform cameraTransform;
 
     [Header("Camera Movement")]
-    public float lookSensitivity = 2f;
+    public float lookSensitivity;
     public float smoothTime = 0.1f;
 
     [Header("Push Strenght")]
@@ -143,10 +143,16 @@ public class PlayerMoveCamera : NetworkBehaviour
         pushSFX.Initialization();
         deathSFX = GameObject.Find("Player Death SFX").GetComponent<MMF_Player>();
         deathSFX.Initialization();
+
+        
     }
 
     void Update()
-    {
+    {   
+        //Sensitivity Code
+        lookSensitivity = PlayerPrefs.GetFloat("Sensitivity");
+        Debug.Log(lookSensitivity);
+
         if (!isLocalPlayer)
         {     
             return;
