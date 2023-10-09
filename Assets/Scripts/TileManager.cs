@@ -58,18 +58,26 @@ public class TileManager : NetworkBehaviour
     private IEnumerator RotatePlayer(GameObject player)
     {
         Quaternion startRotation = player.transform.rotation;
-        Quaternion targetRotation = Quaternion.Euler(-90f, 0f, 0f);
-        float duration = 0.6f;
+
+
+        Vector3 cameraForward = Camera.main.transform.forward; 
+        Vector3 lookDirection = cameraForward;
+        lookDirection.y = 0; 
+        lookDirection.Normalize(); 
+        Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
+        targetRotation = Quaternion.Euler(-90f, targetRotation.eulerAngles.y, targetRotation.eulerAngles.z);
+
+        float duration = 0.5f;
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
         {
-            player.transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / duration);
+            player.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        player.transform.rotation = targetRotation; 
+        player.transform.rotation = targetRotation;
     }
 
     //private void OnTriggerEnter(Collider other)

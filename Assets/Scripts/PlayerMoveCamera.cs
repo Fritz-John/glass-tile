@@ -93,6 +93,8 @@ public class PlayerMoveCamera : NetworkBehaviour
     private Vector3 predictedPushVelocity = Vector3.zero;
     public AudioListener audioListener;
 
+    public SettingsManager settingsManager;
+
     public bool stunned = false;
     private bool hasLanded = false;
 
@@ -151,7 +153,7 @@ public class PlayerMoveCamera : NetworkBehaviour
     {   
         //Sensitivity Code
         lookSensitivity = PlayerPrefs.GetFloat("Sensitivity");
-        Debug.Log(lookSensitivity);
+      //Debug.Log(settingsManager.isPaused);
 
         if (!isLocalPlayer)
         {     
@@ -174,40 +176,45 @@ public class PlayerMoveCamera : NetworkBehaviour
 
         if (!playerNameChange.isRenaming)
         {
-            cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-
-            if (!stunned)
+            if (!settingsManager.isPaused)
             {
-                MyInput();
-                Jump();
-               
-            }
-            else
-            {
-                setMovespeed = 0;
-            }
-          
-            PushableObject();        
-            MovePlayerCamera();
-            
-            ActivatorReset();
-      
-
-            Debug.DrawRay(cameraRay.origin, cameraRay.direction * rangeDetect, Color.red);
 
 
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                
-            }
+                cameraRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+                PlayerMouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+                if (!stunned)
+                {
+                    MyInput();
+                    Jump();
+
+                }
+                else
+                {
+                    setMovespeed = 0;
+                }
+
+                PushableObject();
+                MovePlayerCamera();
+
+                ActivatorReset();
 
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Cursor.lockState = CursorLockMode.None;
-             
+                Debug.DrawRay(cameraRay.origin, cameraRay.direction * rangeDetect, Color.red);
+
+
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+
+                }
+
+
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    Cursor.lockState = CursorLockMode.None;
+
+                }
             }
           
             //Debug.Log(playerLife);
